@@ -2,7 +2,7 @@ Supplementary material to the paper:
 
 **Capping Methods for the Automatic Configuration of Optimization Algorithms**<br>
 [Marcelo de Souza][marcelo], [Marcus Ritt][marcus] and [Manuel López-Ibáñez][manuel]<br>
-Computers & Operations Research, 2021
+Computers & Operations Research, 2021<br>
 [link to the paper]
 
 <br>
@@ -16,7 +16,7 @@ Automatic configuration techniques are widely and successfully used to find good
 
 ### The *capopt* package
 
-All capping methods are implemented in *capopt*. It provides a Python target runner script that integrates with irace. Please, check all details of how to use it and the latest version of the source code in the [*capopt* official repository](https://github.com/souzamarcelo/capopt/tree/master/supp-cor). You can also download the source code of the exact version of *capopt* used in our experiments [here](files/src/capopt.zip).
+All capping methods are implemented in *capopt*. It provides a Python target runner script that integrates with irace. Please, check all details of how to use it and the latest version of the source code in the [*capopt* official repository](https://github.com/souzamarcelo/capopt). You can also download the source code of the exact version of *capopt* used in our experiments [here](files/src/capopt.zip).
 
 ***
 
@@ -52,7 +52,7 @@ Below you find all files for each configuration scenario. We also provide the *s
 | SCIP | [scenario-scip](files/budget-executions/scenario-scip) | [scenario.txt](files/budget-time/scip/scenario.txt) \| [parameters-capopt.txt](files/budget-time/scip/parameters-capopt.txt) |
 
 
-**Important:** for each scenario, file *parameters-capopt.txt* defines the use of the default capping method *PEMW.1*. In order to evaluate other (or disable) capping methods, this file must be changed according to the instructions given [here](../examples/parameters-capopt.txt).
+**Important:** for each scenario, file *parameters-capopt.txt* defines the use of the default capping method *PEMW.1*. In order to evaluate other (or disable) capping methods, this file must be changed according to the instructions given [here](https://github.com/souzamarcelo/capopt/blob/master/examples/parameters-capopt.txt).
 
 ***
 
@@ -70,12 +70,22 @@ We modified the source code of ACOTSP, HACOL and TSBPP, to be able to monitor th
 | SCIP | [link](https://scipopt.org/index.php#download) | [scip-original](files/src/scip-original.zip) | – | – |
 
 
-
 ***
 
 ### Experimental data
 
-Here you find...
+Here you find the raw data of our experiments.
+
++ Evaluating all capping methods using a total executions budget:
+  + [train-data-evaluation.csv](files/experimental-data/train-data-evaluation.csv)
+  + [test-data-evaluation.csv](files/experimental-data/test-data-evaluation.csv)
++ Analyzing the recommended methods in detail (9th replication on ACOTSP):
+  + [noncapped-executions.csv](files/experimental-data/noncapped-executions.csv)
+  + [capped-executions.csv](files/experimental-data/capped-executions.csv)
++ Evaluating all capping methods using a total configuration time budget:
+  + [train-data-timeasbudget.csv](files/experimental-data/train-data-timeasbudget.csv)
+  + [test-data-timeasbudget.csv](files/experimental-data/test-data-timeasbudget.csv)
+
 
 ***
 

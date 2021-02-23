@@ -1,0 +1,14 @@
+executable: ./hhbqp
+instance-command: --ins
+seed-command: --seed
+effort-limit-command: --timelimit
+effort-limit: 20
+effort-type: time
+capping: True
+penalty: best-so-far
+envelope: profile
+strategy: elitist
+ar: exp
+ac: worst
+p: 0.1
+alpha: 10

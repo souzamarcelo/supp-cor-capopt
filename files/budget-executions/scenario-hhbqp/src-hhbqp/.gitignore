@@ -1,0 +1,7 @@
+.idea/
+cmake-build-debug/
+build/
+.vscode/
+*.kdev4
+.kdev4/
+auto

@@ -1,0 +1,6 @@
+parameterFile = "./parameters-acotsp.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxTime = 21000
+digits = 2
+targetRunner = "./capopt/capopt.py"

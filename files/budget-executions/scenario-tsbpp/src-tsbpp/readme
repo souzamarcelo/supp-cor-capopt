@@ -1,0 +1,10 @@
+Distribution package of TSpack code
+by A. Lodi, S. Martello, D. Vigo
+
+- "TSpack.c" and "TSpack.h" (source and header codes);
+- "driver.c"                (driver program);
+- "2d.in" and "3d.in"       (2BP and 3BP sample instances).
+
+Copyright information in Copyright.txt
+
+Andrea Lodi <andrea.lodi@unibo.it>, February 1, 2012

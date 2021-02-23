@@ -1,0 +1,754 @@
+diff -aur src-acotsp-original/acotsp.c src-acotsp-modified/acotsp.c
+--- src-acotsp-original/acotsp.c	2014-02-05 17:36:25.000000000 -0200
++++ src-acotsp-modified/acotsp.c	2020-05-13 14:01:30.000000000 -0300
+@@ -48,7 +48,7 @@
+                   B-1050 Brussels
+ 		  Belgium
+ 
+-***************************************************************************/
++**************************************************************************/
+ 
+ 
+ #include <stdio.h>
+@@ -135,7 +135,7 @@
+ */
+ {
+ 
+-    TRACE ( printf("INITIALIZE TRIAL\n"); );
++    /*TRACE ( printf("INITIALIZE TRIAL\n"); );*/
+   
+     start_timers();
+     time_used = elapsed_time( VIRTUAL );
+@@ -205,7 +205,7 @@
+ {
+     long int k;
+ 
+-    TRACE ( printf("apply local search to all ants\n"); );
++    /*TRACE ( printf("apply local search to all ants\n"); );*/
+ 
+     for ( k = 0 ; k < n_ants ; k++ ) {
+ 	switch (ls_flag) {
+@@ -274,7 +274,7 @@
+     if ( ant[iteration_best_ant].tour_length < restart_best_ant->tour_length ) {
+ 	copy_from_to( &ant[iteration_best_ant], restart_best_ant );
+ 	restart_found_best = iteration;
+-	printf("restart best: %ld, restart_found_best %ld, time %.2f\n",restart_best_ant->tour_length, restart_found_best, elapsed_time ( VIRTUAL )); 
++	/*printf("restart best: %ld, restart_found_best %ld, time %.2f\n",restart_best_ant->tour_length, restart_found_best, elapsed_time ( VIRTUAL )); */
+     }
+ }
+ 
+@@ -295,20 +295,20 @@
+     if (!(iteration % 100)) {
+ 	population_statistics();
+ 	branching_factor = node_branching(lambda);
+-	printf("\nbest so far %ld, iteration: %ld, time %.2f, b_fac %.5f\n",best_so_far_ant->tour_length,iteration,elapsed_time( VIRTUAL),branching_factor);
++	/*printf("\nbest so far %ld, iteration: %ld, time %.2f, b_fac %.5f\n",best_so_far_ant->tour_length,iteration,elapsed_time( VIRTUAL),branching_factor);*/
+ 
+ 	if ( mmas_flag && (branching_factor < branch_fac) && (iteration - restart_found_best > 250) ) {
+ 	    /* MAX-MIN Ant System was the first ACO algorithm to use
+ 	       pheromone trail re-initialisation as implemented
+ 	       here. Other ACO algorithms may also profit from this mechanism.
+ 	    */
+-	    printf("INIT TRAILS!!!\n"); restart_best_ant->tour_length = INFTY; 
++	    /*printf("INIT TRAILS!!!\n"); restart_best_ant->tour_length = INFTY; */
+ 	    init_pheromone_trails( trail_max );
+ 	    compute_total_information();
+ 	    restart_iteration = iteration;
+ 	    restart_time = elapsed_time( VIRTUAL );
+ 	}
+-	printf("try %li, iteration %li, b-fac %f \n\n", n_try,iteration,branching_factor);
++	/*printf("try %li, iteration %li, b-fac %f \n\n", n_try,iteration,branching_factor);*/
+     }
+ }
+ 
+@@ -324,7 +324,7 @@
+ {
+     long int   k;
+ 
+-    TRACE ( printf("Ant System pheromone deposit\n"); );
++    /*TRACE ( printf("Ant System pheromone deposit\n"); );*/
+ 
+     for ( k = 0 ; k < n_ants ; k++ )
+ 	global_update_pheromone( &ant[k] );
+@@ -342,7 +342,7 @@
+ {
+     long int   k;
+ 
+-    TRACE ( printf("Elitist Ant System pheromone deposit\n"); );
++    /*TRACE ( printf("Elitist Ant System pheromone deposit\n"); );*/
+ 
+     for ( k = 0 ; k < n_ants ; k++ )
+ 	global_update_pheromone( &ant[k] );
+@@ -366,7 +366,7 @@
+     long int i, k, b, target;
+     long int *help_b;
+ 
+-    TRACE ( printf("Rank-based Ant System pheromone deposit\n"); );
++    /*TRACE ( printf("Rank-based Ant System pheromone deposit\n"); );*/
+ 
+     help_b = malloc( n_ants  * sizeof(long int) );
+     for ( k = 0 ; k < n_ants ; k++ )
+@@ -402,7 +402,7 @@
+ 
+     long int iteration_best_ant;
+ 
+-    TRACE ( printf("MAX-MIN Ant System pheromone deposit\n"); );
++    /*TRACE ( printf("MAX-MIN Ant System pheromone deposit\n"); );*/
+ 
+     if ( iteration % u_gb ) {
+ 	iteration_best_ant = find_best();
+@@ -448,7 +448,7 @@
+ {
+     long int   iteration_worst_ant, distance_best_worst;
+ 
+-    TRACE ( printf("Best-worst Ant System pheromone deposit\n"); );
++    /*TRACE ( printf("Best-worst Ant System pheromone deposit\n"); );*/
+ 
+     global_update_pheromone( best_so_far_ant );
+     iteration_worst_ant = find_worst();
+@@ -460,7 +460,7 @@
+ 	init_pheromone_trails( trail_0 );
+ 	restart_iteration = iteration;    
+ 	restart_time = elapsed_time( VIRTUAL );
+-	printf("init pheromone trails with %.15f, iteration %ld\n",trail_0,iteration);
++	/*printf("init pheromone trails with %.15f, iteration %ld\n",trail_0,iteration);*/
+     }
+     else 
+ 	bwas_pheromone_mutation();
+@@ -480,7 +480,7 @@
+ 		      but did not use it for the published computational results.
+ */
+ {
+-    TRACE ( printf("Ant colony System global pheromone deposit\n"); );
++    /*TRACE ( printf("Ant colony System global pheromone deposit\n"); );*/
+ 
+     global_acs_pheromone_update( best_so_far_ant );
+ }
+@@ -571,7 +571,7 @@
+     total = generate_double_matrix( n, n );
+ 
+     time_used = elapsed_time( VIRTUAL );
+-    printf("Initialization took %.10f seconds\n",time_used);
++    /*printf("Initialization took %.10f seconds\n",time_used);*/
+ 
+     for ( n_try = 0 ; n_try < max_tries ; n_try++ ) {
+ 
+Somente em src-acotsp-original/: att532.tsp
+Somente em src-acotsp-original/: d1291.tsp
+Somente em src-acotsp-original/: d198.tsp
+Somente em src-acotsp-original/: eil51.tsp
+diff -aur src-acotsp-original/InOut.c src-acotsp-modified/InOut.c
+--- src-acotsp-original/InOut.c	2014-02-05 17:36:25.000000000 -0200
++++ src-acotsp-modified/InOut.c	2020-05-13 14:21:06.000000000 -0300
+@@ -126,39 +126,39 @@
+ 	exit(1);
+     }
+     assert(tsp_file != NULL);
+-    printf("\nreading tsp-file %s ... \n\n", tsp_file_name);
++    /*printf("\nreading tsp-file %s ... \n\n", tsp_file_name);*/
+ 
+     fscanf(tsp_file,"%s", buf);
+     while ( strcmp("NODE_COORD_SECTION", buf) != 0 ) {
+ 	if ( strcmp("NAME", buf) == 0 ) {
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s ", buf); )
++	    /*TRACE ( printf("%s ", buf); )*/
+ 	    fscanf(tsp_file, "%s", buf);
+ 	    strcpy(instance.name, buf);
+-	    TRACE ( printf("%s \n", instance.name); )
++	    /*TRACE ( printf("%s \n", instance.name); )*/
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("NAME:", buf) == 0 ) {
+ 	    fscanf(tsp_file, "%s", buf);
+ 	    strcpy(instance.name, buf);
+-	    TRACE ( printf("%s \n", instance.name); )
++	    /*TRACE ( printf("%s \n", instance.name); )*/
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("COMMENT", buf) == 0 ){
+ 	    fgets(buf, LINE_BUF_LEN, tsp_file);
+-	    TRACE ( printf("%s", buf); )
++	    /*TRACE ( printf("%s", buf); )*/
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("COMMENT:", buf) == 0 ){
+ 	    fgets(buf, LINE_BUF_LEN, tsp_file);
+-	    TRACE ( printf("%s", buf); )
++	    /*TRACE ( printf("%s", buf); )*/
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("TYPE", buf) == 0 ) {
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s ", buf); )
++	    /*TRACE ( printf("%s ", buf); )*/
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s\n", buf); )
++	    /*TRACE ( printf("%s\n", buf); )*/
+ 	    if( strcmp("TSP", buf) != 0 ) {
+ 		fprintf(stderr,"\n Not a TSP instance in TSPLIB format !!\n");
+ 		exit(1);
+@@ -167,7 +167,7 @@
+ 	}
+ 	else if ( strcmp("TYPE:", buf) == 0 ) {
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s\n", buf); )
++	    /*TRACE ( printf("%s\n", buf); )*/
+ 	    if( strcmp("TSP", buf) != 0 ) {
+ 		fprintf(stderr,"\n Not a TSP instance in TSPLIB format !!\n");
+ 		exit(1);
+@@ -176,37 +176,37 @@
+ 	}
+ 	else if( strcmp("DIMENSION", buf) == 0 ){
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s ", buf); );
++	    /*TRACE ( printf("%s ", buf); );*/
+ 	    fscanf(tsp_file, "%ld", &n);
+ 	    instance.n = n;
+-	    TRACE ( printf("%ld\n", n); );
++	    /*TRACE ( printf("%ld\n", n); );*/
+ 	    assert ( n > 2 && n < 6000);
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("DIMENSION:", buf) == 0 ) {
+ 	    fscanf(tsp_file, "%ld", &n);
+ 	    instance.n = n;
+-	    TRACE ( printf("%ld\n", n); );
++	    /*TRACE ( printf("%ld\n", n); );*/
+ 	    assert ( n > 2 && n < 6000);
+ 	    buf[0]=0;
+ 	}
+ 	else if( strcmp("DISPLAY_DATA_TYPE", buf) == 0 ){
+ 	    fgets(buf, LINE_BUF_LEN, tsp_file);
+-	    TRACE ( printf("%s", buf); );
++	    /*TRACE ( printf("%s", buf); );*/
+ 	    buf[0]=0;
+ 	}
+ 	else if ( strcmp("DISPLAY_DATA_TYPE:", buf) == 0 ) {
+ 	    fgets(buf, LINE_BUF_LEN, tsp_file);
+-	    TRACE ( printf("%s", buf); );
++	    /*TRACE ( printf("%s", buf); );*/
+ 	    buf[0]=0;
+ 	}
+ 	else if( strcmp("EDGE_WEIGHT_TYPE", buf) == 0 ){
+ 	    buf[0]=0;
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s ", buf); );
++	    /*TRACE ( printf("%s ", buf); );*/
+ 	    buf[0]=0;
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s\n", buf); );
++	    /*TRACE ( printf("%s\n", buf); );*/
+ 	    if ( strcmp("EUC_2D", buf) == 0 ) {
+ 		distance = round_distance;
+ 	    }
+@@ -229,9 +229,9 @@
+ 	       EUC_2D, CEIL_2D, GEO, or ATT. Everything else fails */
+ 	    buf[0]=0;
+ 	    fscanf(tsp_file, "%s", buf);
+-	    TRACE ( printf("%s\n", buf); )
+-		printf("%s\n", buf);
+-	    printf("%s\n", buf);
++	    /*TRACE ( printf("%s\n", buf); )*/
++		/*printf("%s\n", buf);*/
++	    /*printf("%s\n", buf);*/
+ 	    if ( strcmp("EUC_2D", buf) == 0 ) {
+ 		distance = round_distance;
+ 	    }
+@@ -257,7 +257,7 @@
+ 
+ 
+     if( strcmp("NODE_COORD_SECTION", buf) == 0 ){
+-	TRACE ( printf("found section contaning the node coordinates\n"); )
++	/*TRACE ( printf("found section contaning the node coordinates\n"); )*/
+ 	    }
+     else{
+ 	fprintf(stderr,"\n\nSome error ocurred finding start of coordinates from tsp file !!\n");
+@@ -271,8 +271,8 @@
+ 	    fscanf(tsp_file,"%ld %lf %lf", &j, &nodeptr[i].x, &nodeptr[i].y );
+ 	}
+     }
+-    TRACE ( printf("number of cities is %ld\n",n); )
+-    TRACE ( printf("\n... done\n"); )
++    /*TRACE ( printf("number of cities is %ld\n",n); )*/
++    /*TRACE ( printf("\n... done\n"); )*/
+ 	return (nodeptr);
+ }
+ 
+@@ -286,17 +286,20 @@
+       COMMENTS: none
+ */
+ {
+-    printf("best %ld, iteration: %ld, time %.2f\n",best_so_far_ant->tour_length,iteration,elapsed_time( VIRTUAL));
++    /*printf("best %ld, iteration: %ld, time %.2f\n",best_so_far_ant->tour_length,iteration,elapsed_time( VIRTUAL));*/
+     if (comp_report) 
+         fprintf(comp_report,
+                 "best %ld\t iteration %ld\t tours %ld\t time %.3f\n",
+                 best_so_far_ant->tour_length,iteration,n_tours,time_used);
++
++    printf("%ld\n", best_so_far_ant->tour_length);
+ }
+ 
+ 
+ static void
+ fprintf_parameters (FILE *stream)
+ {
++    /*
+     fprintf(stream,"max_tries\t\t %ld\n", max_tries);
+     fprintf(stream,"max_tours\t\t %ld\n", max_tours);
+     fprintf(stream,"max_time\t\t %.2f\n", max_time);
+@@ -319,6 +322,7 @@
+     fprintf(stream,"mmas_flag\t\t %ld\n", mmas_flag);
+     fprintf(stream,"bwas_flag\t\t %ld\n", bwas_flag);
+     fprintf(stream,"acs_flag\t\t %ld\n", acs_flag);
++    */
+ }
+ 
+ void print_default_parameters() 
+@@ -599,19 +603,19 @@
+   checkTour( best_so_far_ant->tour );
+ /*    printTourFile( best_so_far_ant->tour ); */
+ 
+-  printf("\n Best Solution in try %ld is %ld\n",ntry, best_so_far_ant->tour_length);
++  /*printf("\n Best Solution in try %ld is %ld\n",ntry, best_so_far_ant->tour_length);*/
+   if (report)
+       fprintf(report, "Best: %ld\t Iterations: %6ld\t B-Fac %.5f\t Time %.2f\t Tot.time %.2f\n",
+               best_so_far_ant->tour_length, found_best, found_branching,
+               time_used, elapsed_time( VIRTUAL ));
+-  printf(" Best Solution was found after %ld iterations\n", found_best);
++  /*printf(" Best Solution was found after %ld iterations\n", found_best);*/
+ 
+   best_in_try[ntry] = best_so_far_ant->tour_length;
+   best_found_at[ntry] = found_best;
+   time_best_found[ntry] = time_used;
+   time_total_run[ntry] = elapsed_time( VIRTUAL );
+-  printf("\ntry %ld, Best %ld, found at iteration %ld, found at time %f\n",
+-         ntry, best_in_try[ntry], best_found_at[ntry], time_best_found[ntry]);
++  /*printf("\ntry %ld, Best %ld, found at iteration %ld, found at time %f\n",*/
++  /*       ntry, best_in_try[ntry], best_found_at[ntry], time_best_found[ntry]);*/
+ 
+   if (comp_report) fprintf(comp_report,"end try %ld\n\n",ntry);
+   if (stat_report) fprintf(stat_report,"end try %ld\n\n",ntry);
+@@ -646,11 +650,11 @@
+   stddev_best = std_deviation( best_in_try, max_tries, avg_sol_quality);
+ 
+   t_avgbest = meanr( time_best_found, max_tries );
+-  printf(" t_avgbest = %f\n", t_avgbest );
++  /*printf(" t_avgbest = %f\n", t_avgbest );*/
+   t_stdbest = std_deviationr( time_best_found, max_tries, t_avgbest);
+ 
+   t_avgtotal = meanr( time_total_run, max_tries );
+-  printf(" t_avgtotal = %f\n", t_avgtotal );
++  /*printf(" t_avgtotal = %f\n", t_avgtotal );*/
+   t_stdtotal = std_deviationr( time_total_run, max_tries, t_avgtotal);
+ 
+   if (report) {
+@@ -686,7 +690,7 @@
+ 
+   char temp_buffer[LINE_BUF_LEN];
+ 
+-  printf(PROG_ID_STR);
++  /*printf(PROG_ID_STR);*/
+   set_default_parameters();
+   setbuf(stdout,NULL);
+   parse_commandline(argc, argv);
+@@ -698,9 +702,9 @@
+   time_best_found = calloc(max_tries, sizeof(double));
+   time_total_run = calloc(max_tries, sizeof(double));
+   
+-  TRACE ( printf("read problem data  ..\n\n"); )
++  /*TRACE ( printf("read problem data  ..\n\n"); )*/
+   instance.nodeptr = read_etsp(name_buf);
+-  TRACE ( printf("\n .. done\n\n"); )
++  /*TRACE ( printf("\n .. done\n\n"); )*/
+ 
+   if (n_ants < 0) n_ants = n;
+   /* default setting for elitist_ants is 0; if EAS is applied and
+@@ -731,15 +735,15 @@
+       stat_report = NULL;
+   }
+    
+-  printf("calculating distance matrix ..\n\n");
++  /*printf("calculating distance matrix ..\n\n");*/
+   instance.distance = compute_distances();
+-  printf(" .. done\n");
++  /*printf(" .. done\n");*/
+   write_params();
+   if (comp_report)
+       fprintf(comp_report,"begin problem %s\n",name_buf);
+-  printf("allocate ants' memory ..\n\n");
++  /*printf("allocate ants' memory ..\n\n");*/
+   allocate_ants();
+-  printf(" .. done\n");
++  /*printf(" .. done\n");*/
+ }
+ 
+ 
+@@ -953,9 +957,9 @@
+       OUTPUT:         none
+ */
+ {
+-    fprintf(stdout, "\nParameter-settings: \n\n");
+-    fprintf_parameters (stdout);
+-    fprintf(stdout, "\n");
++    /*fprintf(stdout, "\nParameter-settings: \n\n");*/
++    /*fprintf_parameters (stdout);*/
++    /*fprintf(stdout, "\n");*/
+ 
+   if (report) {
+       fprintf(report,"\nParameter-settings: \n\n");
+Somente em src-acotsp-original/: kroA100.tsp
+Somente em src-acotsp-original/: lin318.tsp
+diff -aur src-acotsp-original/parse.c src-acotsp-modified/parse.c
+--- src-acotsp-original/parse.c	2014-02-05 17:36:25.000000000 -0200
++++ src-acotsp-modified/parse.c	2020-05-13 14:07:45.000000000 -0300
+@@ -1005,50 +1005,50 @@
+ 	exit(0);
+     }
+ 
+-    puts ("\t OPTIONS:");
++    /*puts ("\t OPTIONS:");*/
+ 
+     quiet_flag = options.opt_quiet;
+ 
+     if ( options.opt_time ) {
+ 	max_time = atof(options.arg_time);
+-	fputs ("  -t  --time ", stdout);
+-	if (options.arg_time != NULL)
+-	    printf ("with argument \"%.3f\"\n", max_time);
++	/*fputs ("  -t  --time ", stdout);*/
++	/*if (options.arg_time != NULL)*/
++	    /*printf ("with argument \"%.3f\"\n", max_time);*/
+ 	check_out_of_range( max_time, 0.0, 86400., "max_time (seconds)");
+     } else {
+-        fprintf(stdout,"\tNote: time limit is set to default %g seconds\n", max_time);
++        /*fprintf(stdout,"\tNote: time limit is set to default %g seconds\n", max_time);*/
+     }
+ 
+ 
+ 
+     if ( options.opt_tries ) {
+ 	max_tries = atol(options.arg_tries);
+-	fputs ("  -r  --tries ", stdout);
+-	if (options.arg_tries != NULL)
+-	    printf ("with argument \"%ld\"\n", max_tries);
++	/*fputs ("  -r  --tries ", stdout);*/
++	/*if (options.arg_tries != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", max_tries);*/
+ 	check_out_of_range( max_tries, 1, MAXIMUM_NO_TRIES, "max_tries (tries)");
+     } else {
+-        fprintf(stdout,"\tNote: number or trials is set to default %ld\n", max_tries);
++        /*fprintf(stdout,"\tNote: number or trials is set to default %ld\n", max_tries);*/
+     }
+ 
+     if ( options.opt_tours ) {
+ 	max_tours = atol(options.arg_tours);
+-	fputs ("  -s  --tours ", stdout);
+-	if (options.arg_tries != NULL)
+-	    printf ("with argument \"%ld\"\n", max_tours);
++	/*fputs ("  -s  --tours ", stdout);*/
++	/*if (options.arg_tries != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", max_tours);*/
+ 	check_out_of_range( max_tours, 1, LONG_MAX, "max_tries (tries)");
+     } else {
+-        fprintf(stdout,"\tNote: maximum number tours is set to default %ld\n",
+-                max_tours);
++        /*fprintf(stdout,"\tNote: maximum number tours is set to default %ld\n",*/
++        /*        max_tours);*/
+     }
+ 
+     if ( options.opt_seed ) {
+         seed = atol(options.arg_seed);
+-        fputs ("      --seed ", stdout);
+-        if (options.arg_seed != NULL)
+-            printf ("with argument \"%ld\"\n", seed);
++        /*fputs ("      --seed ", stdout);*/
++        /*if (options.arg_seed != NULL)*/
++            /*printf ("with argument \"%ld\"\n", seed);*/
+     } else {
+-        fprintf(stdout,"\tNote: a seed was generated as %ld\n", seed);
++        /*fprintf(stdout,"\tNote: a seed was generated as %ld\n", seed);*/
+     }
+ 
+ 
+@@ -1056,12 +1056,12 @@
+     if ( options.opt_optimum )
+     {
+ 	optimal = atol(options.arg_optimum);
+- 	fputs ("  -o  --optimum ", stdout);
+-	if (options.arg_optimum != NULL)
+-	    printf ("with argument \"%ld\"\n", optimal);
++ 	/*fputs ("  -o  --optimum ", stdout);*/
++	/*if (options.arg_optimum != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", optimal);*/
+     } else {
+-        fprintf(stdout,"\tNote: optimal solution value is set to default %ld\n",
+-                optimal);
++        /*fprintf(stdout,"\tNote: optimal solution value is set to default %ld\n",*/
++        /*        optimal);*/
+     }
+ 
+ 
+@@ -1073,9 +1073,9 @@
+             exit (1);
+         }
+ 	strcpy (name_buf, options.arg_tsplibfile);
+- 	fputs ("  -i  --tsplibfile ", stdout);
+-	if (options.arg_tsplibfile != NULL)
+-	    printf ("with argument \"%s\"\n", name_buf );
++ 	/*fputs ("  -i  --tsplibfile ", stdout);*/
++	/*if (options.arg_tsplibfile != NULL)*/
++	    /*printf ("with argument \"%s\"\n", name_buf );*/
+     }
+ 
+     if (options.opt_as + options.opt_eas + options.opt_ras + options.opt_mmas
+@@ -1090,58 +1090,58 @@
+     if (options.opt_as || as_flag) {
+         as_flag = TRUE;
+         set_default_as_parameters();
+-        fprintf(stdout,"as_flag is set to 1, run Ant System\n");
++        /*fprintf(stdout,"as_flag is set to 1, run Ant System\n");*/
+     } 
+ 
+     if (options.opt_eas || eas_flag) {
+         eas_flag = TRUE;
+         set_default_eas_parameters();
+-        fprintf(stdout,"eas_flag is set to 1, run elitist Ant System\n");
++        /*fprintf(stdout,"eas_flag is set to 1, run elitist Ant System\n");*/
+     }
+ 
+     if (options.opt_ras || ras_flag) {
+         ras_flag = TRUE;
+         set_default_ras_parameters();
+-        fprintf(stdout,"ras_flag is set to 1, run rank-based Ant System\n");
++        /*fprintf(stdout,"ras_flag is set to 1, run rank-based Ant System\n");*/
+     }
+ 
+     if (options.opt_mmas || mmas_flag) {
+         mmas_flag = TRUE;
+         set_default_mmas_parameters();
+-        fprintf(stdout,"mmas_flag is set to 1, run MAX-MIN Ant System\n");
++        /*fprintf(stdout,"mmas_flag is set to 1, run MAX-MIN Ant System\n");*/
+     }
+ 
+     if (options.opt_bwas || bwas_flag) {
+         bwas_flag = TRUE;
+         set_default_bwas_parameters();
+-        fprintf(stdout,"bwas_flag is set to 1, run Best-Worst Ant System\n");
++        /*fprintf(stdout,"bwas_flag is set to 1, run Best-Worst Ant System\n");*/
+     }
+ 
+     if ( options.opt_acs || acs_flag ) {
+         acs_flag = TRUE;
+         set_default_acs_parameters();
+-        fprintf(stdout,"acs_flag is set to 1, run Ant Colony System\n");
++        /*fprintf(stdout,"acs_flag is set to 1, run Ant Colony System\n");*/
+     }
+ 
+     if ( options.opt_localsearch ) {
+         ls_flag = atol(options.arg_localsearch);
+-        fputs ("  -l  --localsearch ", stdout);
+-        if (options.arg_localsearch != NULL)
+-            printf ("with argument \"%ld\"\n", ls_flag);
++        /*fputs ("  -l  --localsearch ", stdout);*/
++        /*if (options.arg_localsearch != NULL)*/
++            /*printf ("with argument \"%ld\"\n", ls_flag);*/
+         check_out_of_range(ls_flag, 0, 3, "ls_flag");
+     } else {
+         switch (ls_flag) {
+         case 0:
+-            fprintf(stdout,"\tNote: local search flag is set to default 0 (disabled)\n");
++            /*fprintf(stdout,"\tNote: local search flag is set to default 0 (disabled)\n");*/
+             break;
+         case 1:
+-            fprintf(stdout,"\tNote: local search flag is set to default 1 (2-opt)\n");
++            /*fprintf(stdout,"\tNote: local search flag is set to default 1 (2-opt)\n");*/
+             break;
+         case 2:
+-            fprintf(stdout,"\tNote: local search flag is set to default 2 (2.5-opt)\n");
++            /*fprintf(stdout,"\tNote: local search flag is set to default 2 (2.5-opt)\n");*/
+             break;
+         case 3:
+-            fprintf(stdout,"\tNote: local search flag is set to default 3 (3-opt)\n");
++            /*fprintf(stdout,"\tNote: local search flag is set to default 3 (3-opt)\n");*/
+             break;
+         default:
+             abort();
+@@ -1154,88 +1154,88 @@
+ 
+     if ( options.opt_ants ) {
+ 	n_ants = atol(options.arg_ants);
+-	fputs ("  -m  --ants ", stdout);
+-	if (options.arg_ants != NULL)
+-	    printf ("with argument \"%ld\"\n", n_ants);
++	/*fputs ("  -m  --ants ", stdout);*/
++	/*if (options.arg_ants != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", n_ants);*/
+ 	check_out_of_range( n_ants, 1, MAX_ANTS-1, "n_ants");
+     } else {
+-        if (n_ants < 0)
+-            fprintf(stdout,"\tNote: number or ants is set to default n\n");
+-        else
+-            fprintf(stdout,"\tNote: number or ants is set to default %ld\n",
+-                    n_ants);
++        /*if (n_ants < 0)*/
++            /*fprintf(stdout,"\tNote: number or ants is set to default n\n");*/
++        /*else*/
++            /*fprintf(stdout,"\tNote: number or ants is set to default %ld\n",*/
++            /*        n_ants);*/
+     }
+ 
+     if ( options.opt_nnants ) {
+ 	nn_ants = atol(options.arg_nnants);
+-	fputs ("  -g  --nnants ", stdout);
+-	if (options.arg_ants != NULL)
+-	    printf ("with argument \"%ld\"\n", nn_ants);
++	/*fputs ("  -g  --nnants ", stdout);*/
++	/*if (options.arg_ants != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", nn_ants);*/
+ 	check_out_of_range( nn_ants, 1, 100, "nn_ants");
+     } else {
+-        fprintf(stdout,"\tNote: number of nearest neighbours in tour construction is set to default %ld\n", nn_ants);
++        /*fprintf(stdout,"\tNote: number of nearest neighbours in tour construction is set to default %ld\n", nn_ants);*/
+     }
+ 
+ 
+ 
+     if ( options.opt_alpha ) {
+ 	alpha = atof(options.arg_alpha);
+-	fputs ("  -a  --alpha ", stdout);
+-	if (options.arg_alpha != NULL)
+-	    printf ("with argument \"%f\"\n", alpha);
++	/*fputs ("  -a  --alpha ", stdout);*/
++	/*if (options.arg_alpha != NULL)*/
++	    /*printf ("with argument \"%f\"\n", alpha);*/
+ 	check_out_of_range( alpha, 0., 100., "alpha");
+     } else {
+-        fprintf(stdout,"\tNote: alpha is set to default %g\n", alpha);
++        /*fprintf(stdout,"\tNote: alpha is set to default %g\n", alpha);*/
+     }
+ 
+ 
+ 
+     if ( options.opt_beta ) {
+ 	beta = atof(options.arg_beta);
+-	fputs ("  -b  --beta ", stdout);
+-	if (options.arg_beta != NULL)
+-	    printf ("with argument \"%f\"\n", beta);
++	/*fputs ("  -b  --beta ", stdout);*/
++	/*if (options.arg_beta != NULL)*/
++	    /*printf ("with argument \"%f\"\n", beta);*/
+ 	check_out_of_range( beta, 0., 100., "beta");
+     } else {
+-        fprintf(stdout,"\tNote: beta is set to default %g\n", beta);
++        /*fprintf(stdout,"\tNote: beta is set to default %g\n", beta);*/
+     }
+ 
+ 
+     if ( options.opt_rho ) {
+ 	rho = atof(options.arg_rho);
+-	fputs ("  -e  --rho ", stdout);
+-	if (options.arg_rho != NULL)
+-	    printf ("with argument \"%f\"\n", rho);
++	/*fputs ("  -e  --rho ", stdout);*/
++	/*if (options.arg_rho != NULL)*/
++	    /*printf ("with argument \"%f\"\n", rho);*/
+         check_out_of_range( rho, 0.000001, 1., "rho");
+     } else {
+-        fprintf(stdout,"\tNote: rho is set to default %g\n", rho);
++        /*fprintf(stdout,"\tNote: rho is set to default %g\n", rho);*/
+     }
+ 
+ 
+ 
+     if ( options.opt_q0 ) {
+ 	q_0 = atof(options.arg_q0);
+-	fputs ("  -q  --q0 ", stdout);
+-	if (options.arg_q0 != NULL)
+-	    printf ("with argument \"%f\"\n", q_0);
++	/*fputs ("  -q  --q0 ", stdout);*/
++	/*if (options.arg_q0 != NULL)*/
++	    /*printf ("with argument \"%f\"\n", q_0);*/
+ 	check_out_of_range( q_0, 0., 1., "q0");
+     } else {
+-        fprintf(stdout,"\tNote: q_0 is set to default %g\n", q_0);
++        /*fprintf(stdout,"\tNote: q_0 is set to default %g\n", q_0);*/
+     }
+ 
+ 
+ 
+     if ( options.opt_elitistants ) {
+ 	elitist_ants = atol(options.arg_elitistants);
+-	fputs ("  -m  --ants ", stdout);
+-	if (options.arg_elitistants != NULL)
+-	    printf ("with argument \"%ld\"\n", elitist_ants);
++	/*fputs ("  -m  --ants ", stdout);*/
++	/*if (options.arg_elitistants != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", elitist_ants);*/
+         check_out_of_range( elitist_ants, 0, LONG_MAX, "elitistants");
+     } else {
+         if (elitist_ants <= 0) {
+-            fprintf(stdout,"\tNote: number of elitist ants is set to default n\n");
++            /*fprintf(stdout,"\tNote: number of elitist ants is set to default n\n");*/
+         } else {
+-            fprintf(stdout,"\tNote: number of elitist ants is set to default %ld\n", elitist_ants);
++            /*fprintf(stdout,"\tNote: number of elitist ants is set to default %ld\n", elitist_ants);*/
+         }
+     }
+ 
+@@ -1243,38 +1243,38 @@
+ 
+     if ( options.opt_rasranks ) {
+ 	ras_ranks = atol(options.arg_rasranks);
+-	fputs ("  -m  --ants ", stdout);
++	/*fputs ("  -m  --ants ", stdout);*/
+ 	if (options.arg_rasranks != NULL)
+-	    printf ("with argument \"%ld\"\n", ras_ranks);
++	    /*printf ("with argument \"%ld\"\n", ras_ranks);*/
+         check_out_of_range( ras_ranks, 0, LONG_MAX, "rasranks");
+     } else {
+-        fprintf(stdout,"\tNote: number of ranks is set to default %ld\n", ras_ranks);
++        /*fprintf(stdout,"\tNote: number of ranks is set to default %ld\n", ras_ranks);*/
+     }
+ 
+ 
+     if ( options.opt_nnls ) {
+ 	nn_ls = atol(options.arg_nnls);
+-	fputs ("  -k  --nnls ", stdout);
+-	if (options.arg_nnls != NULL)
+-	    printf ("with argument \"%ld\"\n", nn_ls);
++	/*fputs ("  -k  --nnls ", stdout);*/
++	/*if (options.arg_nnls != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", nn_ls);*/
+         check_out_of_range( nn_ls, 0, LONG_MAX, "nnls");
+     } else {
+-        fprintf(stdout,"\tNote: number nearest neighbours in local search is set to default %ld\n", nn_ls);
++        /*fprintf(stdout,"\tNote: number nearest neighbours in local search is set to default %ld\n", nn_ls);*/
+     }
+ 
+ 
+     if ( options.opt_dlb ) {
+ 	dlb_flag = atol(options.arg_dlb);
+-	fputs ("  -d  --dlb ", stdout);
+-	if (options.arg_dlb != NULL)
+-	    printf ("with argument \"%ld\"\n", dlb_flag);
++	/*fputs ("  -d  --dlb ", stdout);*/
++	/*if (options.arg_dlb != NULL)*/
++	    /*printf ("with argument \"%ld\"\n", dlb_flag);*/
+ 	check_out_of_range( dlb_flag, 0, 1, "dlb_flag");
+     } else {
+-        fprintf(stdout,"\tNote: dlb flag is set to default %d (%s don't look bits)\n", 
+-                dlb_flag ? 1 : 0, dlb_flag ? "use" : "not use");
++        /*fprintf(stdout,"\tNote: dlb flag is set to default %d (%s don't look bits)\n", */
++        /*        dlb_flag ? 1 : 0, dlb_flag ? "use" : "not use");*/
+     }
+ 
+-    puts ("Non-option arguments:");
++    /*puts ("Non-option arguments:");*/
+ 
+     while (i < argc) {
+ 	fprintf (stderr,"  \"%s\"\n", argv [i++]);
+Somente em src-acotsp-original/: pcb1173.tsp
+Somente em src-acotsp-original/: pcb442.tsp
+Somente em src-acotsp-original/: pr2392.tsp
+Somente em src-acotsp-original/: rat783.tsp

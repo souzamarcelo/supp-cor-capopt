@@ -1,0 +1,15 @@
+executable: ./lkhcli.py
+instance-command: --instance
+seed-command: --seed
+effort-limit: 10
+effort-type: time
+external-halt: True
+budget-type: timeout
+capping: True
+penalty: best-so-far
+envelope: profile
+strategy: elitist
+ar: exp
+ac: worst
+p: 0.1
+alpha: 10

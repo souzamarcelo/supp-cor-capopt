@@ -1,0 +1,126 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings FATAL => 'all';
+use diagnostics;
+use File::Temp qw/ tempfile /;
+
+use Getopt::Long;
+Getopt::Long::Configure("pass_through", "auto_help");
+
+my $verbose = '';
+my $instance = '';
+my $cutofftime = 60;
+my $outfile = "";
+my $limits_memory = 350;
+my $savetemps = '';
+
+GetOptions ('verbose' => \$verbose,
+            'save-temps' => \$savetemps,
+            'output|o=s' => \$outfile,
+            'instance|input=s' => \$instance,
+            'time|t=f'   => \${cutofftime},
+            'limits-memory=i' => \${limits_memory});
+
+my $options = "";
+
+while (@ARGV) {
+    my $argv = shift @ARGV;
+    
+    if ($argv =~ /^--([^=]*)$/) {
+        my $option = $1;
+        $option =~ tr/-/\//;
+        my $value = shift @ARGV;
+        #print "$option = $value\n";
+        while (@ARGV and $ARGV[0] !~ /^--/) {
+            $value .= " " . shift @ARGV;
+        }
+        $options .= "$option = $value\n";
+    }
+}
+
+#print $options;
+my $settingsfile = $outfile . ".conf";
+my $SETTINGS;
+if ($savetemps) {
+    open ($SETTINGS, "> $settingsfile") or die "Cannot open $settingsfile: $!";
+} else {
+    ($SETTINGS, $settingsfile) = tempfile();
+}
+
+print $SETTINGS <<"EOF";
+# maximal number of characters in a node information line
+# [type: int, range: [0,2147483647], default: 139]
+display/width = 500
+# number of threads used for solving the LP (0: automatic)
+# [type: int, range: [0,64], default: 0]
+lp/threads = 1
+# maximal memory usage in MB; reported memory usage is lower than real memory usage!
+# [type: real, range: [0,1.79769313486232e+308], default: 1e+20]
+limits/memory = ${limits_memory}
+EOF
+
+if ($verbose) {
+    print $SETTINGS <<"EOF";
+###
+display/sols/active = 1
+###
+EOF
+} else {
+    print $SETTINGS <<"EOF";
+# verbosity level of output
+# [type: int, range: [0,5], default: 4]
+display/verblevel = 3
+# frequency for displaying header lines (every n'th node information line)
+# [type: int, range: [-1,2147483647], default: 15]
+display/headerfreq = 0
+display/time/active = 2
+display/solfound/active = 0
+display/nnodes/active = 0
+display/nodesleft/active = 0
+display/lpiterations/active = 0
+display/lpavgiterations/active = 0
+display/memused/active = 0
+display/depth/active = 0
+display/maxdepth/active = 0
+display/plungedepth/active = 0
+display/nfrac/active = 0
+display/nexternbranchcands/active = 0
+display/vars/active = 0
+display/conss/active = 0
+display/curconss/active = 0
+display/curcols/active = 0
+display/currows/active = 0
+display/cuts/active = 0
+display/separounds/active = 0
+display/poolsize/active = 0
+display/conflicts/active = 0
+display/strongbranchs/active = 0
+display/lpobj/active = 0
+display/curdualbound/active = 0
+display/estimate/active = 0
+display/avgdualbound/active = 0
+display/dualbound/active = 0
+display/primalbound/active = 2
+display/cutoffbound/active = 0
+display/gap/active = 0
+display/nsols/active = 0
+###
+EOF
+}
+
+print $SETTINGS $options;
+close($SETTINGS);
+
+my $scip = "./scip-2.0.2.linux.x86_64.gnu.opt.spx";
+
+open(SCIP, "| $scip -s $settingsfile") or die "Could not execute SCIP: $!";
+print SCIP <<"EOF";
+read $instance
+set timing clocktype 1
+set limits time $cutofftime
+opt
+quit
+EOF
+close(SCIP);
+

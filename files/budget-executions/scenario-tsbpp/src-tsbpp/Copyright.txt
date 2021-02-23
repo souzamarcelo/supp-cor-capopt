@@ -1,0 +1,27 @@
+1.  The Ansi C codes  are  under  the  exclusive  copyright of Andrea  Lodi, 
+    Silvano Martello and Daniele  Vigo  from  the Department of Electronics,
+    Computer Sciences and Systems (DEIS) at the University of Bologna.                            
+2.  The codes come with no warranty, whether expressed or implied, that they
+    are free of errors or suitable for any specific purpose.They must not be
+    used to solve any problem,  whose  incorrect  solution  could  result in
+    injury to a person, institution or property. It is at the users own risk
+    to use thecodes or parts of them and the authors disclaims all liability
+    for such use.
+3.  This software is distributed "as is".  In  particular,  no  maintenance,
+    support or trouble-shooting or subsequent upgrade is implied.
+4.  The  use of  the Ansi C codes  must be acknowledged,  in any publication
+    which contains results obtained with them or parts of them.  Citation of
+    the authors' names  and/or  referring to the paper 
+    A. Lodi, S. Martello, D. Vigo (2004). Tspack: A unified tabu search code 
+    for multi-dimensional bin packing problems.Annals of Operations Research 
+    131, 203--213.
+    URL: http://www.or.deis.unibo.it/research_pages/ORcodes/TSpack.tar.gz
+5.  The  free  use  of  the Ansi C codes  or parts of them is restricted for
+    research purpose and academic use. Any company application or commercial 
+    use requires permission and licensing from the authors of the code.
+    Contact: 
+        Andrea Lodi, Silvano Martello and Daniele Vigo
+        DEIS, University of Bologna
+        2 Viale Risorgimento
+        I-40136 Bologna, Italy
+        

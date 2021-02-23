@@ -1,0 +1,7 @@
+parameterFile = "./parameters-tsbpp.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxTime = 700
+digits = 2
+targetRunner = "./capopt/capopt.py"
+deterministic = TRUE

@@ -1,0 +1,7 @@
+parameterFile = "./parameters-lkh.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxTime = 3500
+digits = 2
+targetRunner = "./capopt/capopt.py"
+forbiddenFile = "./forbidden.txt"

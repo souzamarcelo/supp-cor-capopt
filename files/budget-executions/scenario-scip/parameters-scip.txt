@@ -1,0 +1,856 @@
+######################################
+## Template for parameter configuration file for Iterated Race.
+##
+## The format is one parameter per line. Each line contains:
+##
+## 1: Name of the parameter. An unquoted alphanumeric string,
+##    example: ants
+
+## 2: Switch to pass the parameter. A quoted (possibly empty) string, 
+##    if the value and the switch must be separated, add a space at
+##    the end of the string. Example : "--version1 --ants "
+
+## 3: Type. An unquoted single letter, among 
+##     i: Integer, c: categorical, o: ordinal, r: real.
+
+## 4: For c and o: All possible values, that is, a variable number of
+##    quoted or unquoted strings separated by commas within
+##    parenthesis. Empty strings and strings containing commas or
+##    spaces must be quoted.
+##    For i,r: a pair of unquoted numbers representing minimum and
+##    maximum values. 
+
+## 5: A conditional parameter can be defined according to constraints
+##    on one or several other parameters.  This is done by adding a
+##    character '|' followed by an R expression involving the names of
+##    other parameters. This expression must return TRUE if the 
+##    constraint is satisfied, FALSE otherwise.
+
+# 1:            2:                   3: 4:      5:
+# maximal number of separation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: -1]
+separating.maxroundsroot "--separating-maxroundsroot "  c (-1, 5, 10, 20, 50, 100)
+
+# maximal number of separated cuts at the root node (0: disable root node separation)
+# [type: int, range: [0,2147483647], default: 2000]
+separating.maxcutsroot "--separating-maxcutsroot "  c (100, 1000, 2000, 5000, 100000) 
+
+# minimal orthogonality for a cut to enter the LP in the root node
+# [type: real, range: [0,1], default: 0.5]
+separating.minorthoroot "--separating-minorthoroot "  c (0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0) 
+
+# minimal efficacy for a cut to enter the LP in the root node
+# [type: real, range: [0,1e+98], default: 0.01]
+separating.minefficacyroot "--separating-minefficacyroot "  c (0.01, 0.02, 0.005)
+# separation frequency for the global cut pool (-1: disable global cut pool, 0: only separate pool at the root)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.poolfreq "--separating-poolfreq "  c (0, 1, 10)  
+
+# maximum age a cut can reach before it is deleted from the global cut pool, or -1 to keep all cuts
+# [type: int, range: [-1,2147483647], default: 100]
+separating.cutagelimit "--separating-cutagelimit "  c (5, 10, 50, 100)   
+
+# maximal number of consecutive separation rounds without objective or integrality improvement (-1: no additional restriction)
+# [type: int, range: [-1,2147483647], default: 5]
+separating.maxstallrounds "--separating-maxstallrounds "  c (1, 3, 5, 10)  
+
+# row norm to use for efficacy calculation ('e'uclidean, 'm'aximum, 's'um, 'd'iscrete)
+# [type: char, range: {emsd}, default: e]
+separating.efficacynorm "--separating-efficacynorm "   c (e, m, s, d)  
+
+# function used for calc. scalar prod. in orthogonality test ('e'uclidean, 'd'iscrete)
+# [type: char, range: {ed}, default: e]
+separating.orthofunc "--separating-orthofunc "   c (e, d)  
+
+# factor to scale orthogonality of cut in separation score calculation (0.0 to disable orthogonality calculation)
+# [type: real, range: [0,1e+98], default: 1]
+separating.orthofac "--separating-orthofac "  c (0.1, 0.5, 1, 2, 10)  
+
+# maximal number of separation rounds in the root node of a subsequent run (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 1]
+separating.maxroundsrootsubrun "--separating-maxroundsrootsubrun "  c (0, 1, 5, -1)  
+
+# maximal number of runs for which separation is enabled (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: -1]
+separating.maxruns "--separating-maxruns "   c (1, 5, -1) 
+
+# frequency for calling separator <clique> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.clique.freq "--separating-clique-freq "  c (0, -1)  
+
+# maximal number of clique cuts separated per separation round (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 10]
+separating.clique.maxsepacuts "--separating-clique-maxsepacuts "  c (1, 5, 10, 100, -1)  
+
+# frequency for premature backtracking up to tree level 1 (0: no backtracking)
+# [type: int, range: [0,2147483647], default: 1000]
+separating.clique.backtrackfreq "--separating-clique-backtrackfreq "  c (0, 500, 1000, 10000, 100000)   
+
+# maximal number of nodes in branch and bound tree (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 10000]
+separating.clique.maxtreenodes "--separating-clique-maxtreenodes "   c (500, 10000, -1)  
+
+# maximal number of zero-valued variables extending the clique (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 1000]
+separating.clique.maxzeroextensions "--separating-clique-maxzeroextensions "   c (100, 1000, 100000, -1)  
+
+# factor for scaling weights
+# [type: real, range: [1,1.79769313486232e+308], default: 1000]
+separating.clique.scaleval "--separating-clique-scaleval "  c (1000, 100000)  
+
+# frequency for calling separator <cmir> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.cmir.freq "--separating-cmir-freq "   c (0, -1)  
+
+# maximal number of cmir cuts separated per separation round in the root node
+# [type: int, range: [0,2147483647], default: 500]
+separating.cmir.maxsepacutsroot "--separating-cmir-maxsepacutsroot "  c (50, 100, 500, 1000)  
+
+# maximal number of cmir separation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 10]
+separating.cmir.maxroundsroot "--separating-cmir-maxroundsroot "   c (5, 10, 20, -1)  
+
+# maximal number of aggregations for each row per separation round in the root node
+# [type: int, range: [0,2147483647], default: 6]
+separating.cmir.maxaggrsroot "--separating-cmir-maxaggrsroot "  c (4, 6, 8, 10)  
+
+# maximal number of active continuous variables in aggregated row in the root node
+# [type: int, range: [0,2147483647], default: 10]
+separating.cmir.maxcontsroot "--separating-cmir-maxcontsroot "   c (5, 10, 20, 100)  
+
+# maximal number of consecutive unsuccesful aggregation tries in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 100]
+separating.cmir.maxfailsroot "--separating-cmir-maxfailsroot "   c (10, 80, 100, 200)  
+
+# maximal density of aggregated row
+# [type: real, range: [0,1], default: 0.2]
+separating.cmir.maxaggdensity "--separating-cmir-maxaggdensity "   c (0.1, 0.2, 0.3)  
+
+# frequency for calling separator <flowcover> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.flowcover.freq "--separating-flowcover-freq "  c (0, -1)  
+
+# maximal number of flow cover cuts separated per separation round in the root
+# [type: int, range: [0,2147483647], default: 200]
+separating.flowcover.maxsepacutsroot "--separating-flowcover-maxsepacutsroot " c (50, 100, 200, 500)  
+
+# maximal number of separation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 10]
+separating.flowcover.maxroundsroot "--separating-flowcover-maxroundsroot "   c (5, 10, 20, -1)  
+
+# maximal number of consecutive fails to generate a cut per separation round in the root (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 100]
+separating.flowcover.maxfailsroot "--separating-flowcover-maxfailsroot "   c (10, 50, 80, 100, 200)  
+
+# frequency for calling separator <gomory> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.gomory.freq "--separating-gomory-freq "  c (0, -1)  
+
+# maximal number of gomory separation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: -1]
+separating.gomory.maxroundsroot "--separating-gomory-maxroundsroot "   c (5, 10, 20, -1)  
+
+# maximal number of gomory cuts separated per separation round in the root node
+# [type: int, range: [0,2147483647], default: 500]
+separating.gomory.maxsepacutsroot "--separating-gomory-maxsepacutsroot "   c (50, 100, 500, 1000)  
+
+# frequency for calling separator <impliedbounds> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.impliedbounds.freq "--separating-impliedbounds-freq "   c (0, -1)  
+
+# frequency for calling separator <rapidlearning> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: -1]
+separating.rapidlearning.freq "--separating-rapidlearning-freq "  c (0, -1)  
+
+# should the found conflicts be applied in the original SCIP?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+separating.rapidlearning.applyconflicts "--separating-rapidlearning-applyconflicts "   c (FALSE, TRUE)  
+
+# maximum problem size (variables) for which rapid learning will be called
+# [type: int, range: [0,2147483647], default: 10000]
+separating.rapidlearning.maxnvars "--separating-rapidlearning-maxnvars "  c (5000, 10000, 1000000)  
+
+# maximum problem size (constraints) for which rapid learning will be called
+# [type: int, range: [0,2147483647], default: 10000]
+separating.rapidlearning.maxnconss "--separating-rapidlearning-maxnconss "   c (5000, 10000, 1000000)  
+
+# frequency for calling separator <redcost> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 1]
+separating.redcost.freq "--separating-redcost-freq "   c (-1, 0, 10, 1)  
+
+# frequency for calling separator <strongcg> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+separating.strongcg.freq "--separating-strongcg-freq "   c (0, -1)  
+
+# maximal number of strong CG separation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 20]
+separating.strongcg.maxroundsroot "--separating-strongcg-maxroundsroot "  c (5, 10, 20, -1)  
+
+# maximal number of strong CG cuts separated per separation round in the root node
+# [type: int, range: [0,2147483647], default: 500]
+separating.strongcg.maxsepacutsroot "--separating-strongcg-maxsepacutsroot " c (50, 100, 500, 1000)  
+
+# frequency for calling separator <zerohalf> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: -1]
+separating.zerohalf.freq "--separating-zerohalf-freq "   c (0, -1)  
+
+# frequency for separating cuts (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+constraints.knapsack.sepafreq "--constraints-knapsack-sepafreq "   c (0, -1)  
+
+# maximal number of cuts separated per separation round in the root node
+# [type: int, range: [0,2147483647], default: 200]
+constraints.knapsack.maxsepacutsroot "--constraints-knapsack-maxsepacutsroot "  c (50, 100, 200, 500)  
+
+# frequency for separating cuts (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 0]
+constraints.linear.sepafreq "--constraints-linear-sepafreq "   c (0, -1)  
+
+# maximal number of cuts separated per separation round in the root node
+# [type: int, range: [0,2147483647], default: 200]
+constraints.linear.maxsepacutsroot "--constraints-linear-maxsepacutsroot "   c (50, 100, 200, 500)  
+
+# branching score function ('s'um, 'p'roduct)
+# [type: char, range: {sp}, default: p]
+branching.scorefunc "--branching-scorefunc " c ("s", "p")
+
+# branching score factor to weigh downward and upward gain prediction in sum score function
+# [type: real, range: [0,1], default: 0.167]
+branching.scorefac "--branching-scorefac "  c (0.167, 0.3, 0.5)  
+
+# should branching on binary variables be preferred?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+branching.preferbinary "--branching-preferbinary " c (TRUE, FALSE)
+
+# should conflict analysis be enabled?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.enable "--conflict-enable " c (TRUE, FALSE)
+# should propagation conflict analysis be used?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.useprop "--conflict-useprop " c (TRUE, FALSE)
+
+# should infeasible LP conflict analysis be used?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.useinflp "--conflict-useinflp " c (TRUE, FALSE)
+
+# should bound exceeding LP conflict analysis be used?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+conflict.useboundlp "--conflict-useboundlp " c (TRUE, FALSE)
+
+# should infeasible.bound exceeding strong branching conflict analysis be used?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+conflict.usesb "--conflict-usesb " c (TRUE, FALSE)
+
+# should pseudo solution conflict analysis be used?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.usepseudo "--conflict-usepseudo " c (TRUE, FALSE)
+
+# maximal fraction of variables involved in a conflict constraint
+# [type: real, range: [0,1.79769313486232e+308], default: 0.1]
+conflict.maxvarsfac "--conflict-maxvarsfac "   c (0.03, 0.05, 0.1, 0.2)  
+
+# minimal absolute maximum of variables involved in a conflict constraint
+# [type: int, range: [0,2147483647], default: 30]
+conflict.minmaxvars "--conflict-minmaxvars "   c (10, 30, 50, 100)  
+
+# maximal number of LP resolving loops during conflict analysis (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 2]
+conflict.maxlploops "--conflict-maxlploops "   c (-1, 1, 2, 10)  
+
+# maximal number of LP iterations in each LP resolving loop (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 10]
+conflict.lpiterations "--conflict-lpiterations "   c (-1, 10, 20, 40)  
+
+# number of depth levels up to which first UIP's are used in conflict analysis (-1: use All-FirstUIP rule)
+# [type: int, range: [-1,2147483647], default: -1]
+conflict.fuiplevels "--conflict-fuiplevels "   c (-1, 1, 2, 5)  
+
+# maximal number of conflict constraints accepted at an infeasible node (-1: use all generated conflict constraints)
+# [type: int, range: [-1,2147483647], default: 10]
+conflict.maxconss "--conflict-maxconss "   c (1, 5, 10, 20)  
+
+# should binary conflicts be preferred?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+conflict.preferbinary "--conflict-preferbinary "  c (TRUE, FALSE)
+
+# should conflict constraints be generated that are only valid locally?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.allowlocal "--conflict-allowlocal "  c (TRUE, FALSE)
+
+# should earlier nodes be repropagated in order to replace branching decisions by deductions?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.repropagate "--conflict-repropagate "  c (TRUE, FALSE)
+
+# should constraints be kept for repropagation even if they are too long?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+conflict.keepreprop "--conflict-keepreprop "  c (TRUE, FALSE)
+
+# number of successful conflict analysis calls that trigger a restart (0: disable conflict restarts)
+# [type: int, range: [0,2147483647], default: 0]
+conflict.restartnum "--conflict-restartnum "   c (0, 100, 1000, 10000)  
+
+# factor to increase restartnum with after each restart
+# [type: real, range: [0,1.79769313486232e+308], default: 1.5]
+conflict.restartfac "--conflict-restartfac "   c (1.5, 10, 1e19)  
+
+# maximum age an unnecessary constraint can reach before it is deleted (0: dynamic, -1: keep all constraints)
+# [type: int, range: [-1,2147483647], default: 0]
+constraints.agelimit "--constraints-agelimit "  c (0, 10, 20)  
+
+# age of a constraint after which it is marked obsolete (0: dynamic, -1 do not mark constraints obsolete)
+# [type: int, range: [-1,2147483647], default: -1]
+constraints.obsoleteage "--constraints-obsoleteage "   c (-1, 0)  
+
+#limits/maxsol c (10, 100, 1000)  
+
+# frequency for solving LP at the nodes (-1: never; 0: only root LP)
+# [type: int, range: [-1,2147483647], default: 1]
+lp.solvefreq "--lp-solvefreq "   c (0, 1, 2, 10)  
+
+# maximum age a dynamic column can reach before it is deleted from the LP (-1: don't delete columns due to aging)
+# [type: int, range: [-1,2147483647], default: 10]
+lp.colagelimit "--lp-colagelimit "   c (5, 10, 100)  
+
+# maximum age a dynamic row can reach before it is deleted from the LP (-1: don't delete rows due to aging)
+# [type: int, range: [-1,2147483647], default: 10]
+lp.rowagelimit "--lp-rowagelimit "  c (5, 10, 100)  
+
+# should new non-basic columns be removed after LP solving?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+lp.cleanupcols "--lp-cleanupcols "  c (TRUE, FALSE)
+
+# should new non-basic columns be removed after root LP solving?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+lp.cleanupcolsroot "--lp-cleanupcolsroot "  c (TRUE, FALSE)
+
+# should new basic rows be removed after LP solving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+lp.cleanuprows "--lp-cleanuprows "  c (TRUE, FALSE)
+
+# should new basic rows be removed after root LP solving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+lp.cleanuprowsroot "--lp-cleanuprowsroot "  c (TRUE, FALSE)
+
+# should scaling of LP solver be used?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+lp.scaling "--lp-scaling "  c (TRUE, FALSE)
+
+# should smaller hashtables be used? yields better performance for small problems with about 100 variables
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+misc.usesmalltables "--misc-usesmalltables "   c (TRUE, FALSE)  
+
+# child selection rule ('d'own, 'u'p, 'p'seudo costs, 'i'nference, 'l'p value, 'r'oot LP value difference, 'h'brid inference.root LP value difference)
+# [type: char, range: {dupilrh}, default: h]
+nodeselection.childsel "--nodeselection-childsel "  c (h, d, u, p, i, l, r)  
+
+# maximal number of presolving rounds (-1: unlimited, 0: off)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.maxrounds "--presolving-maxrounds "   c (-1, 10, 100)  
+
+# abort presolve, if at most this fraction of the problem was changed in last presolve round
+# [type: real, range: [0,1], default: 0.0001]
+presolving.abortfac "--presolving-abortfac "   c (0.0, 0.0001, 0.001, 0.01, 0.1)  
+# maximal number of restarts (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.maxrestarts "--presolving-maxrestarts "   c (-1, 0, 1, 5)  
+
+# fraction of integer variables that were fixed in the root node triggering a restart with preprocessing after root node evaluation
+# [type: real, range: [0,1], default: 0.05]
+presolving.restartfac "--presolving-restartfac "   c (0.025, 0.05, 0.1)  
+
+# fraction of integer variables that were fixed in the root node triggering an immediate restart with preprocessing
+# [type: real, range: [0,1], default: 0.2]
+presolving.immrestartfac "--presolving-immrestartfac "   c (0.1, 0.2, 1.0)  
+
+# minimal fraction of integer variables removed after restart to allow for an additional restart
+# [type: real, range: [0,1], default: 0.1]
+presolving.restartminred "--presolving-restartminred "  c (0.0, 0.1)  
+
+# fraction of integer variables that were globally fixed during the solving process triggering a restart with preprocessing
+# [type: real, range: [0,1], default: 1]
+presolving.subrestartfac "--presolving-subrestartfac "  c (0.1, 0.3, 0.5, 1) 
+
+# maximal number of propagation rounds per node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 100]
+propagating.maxrounds "--propagating-maxrounds "  c (1, 10, 100, 250, -1)  
+
+# maximal number of propagation rounds in the root node (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 1000]
+propagating.maxroundsroot "--propagating-maxroundsroot "   c (10, 100, 1000, 5000, -1)  
+
+# should propagation be aborted immediately? setting this to FALSE could help conflict analysis to produce more conflict constraints
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+propagating.abortoncutoff "--propagating-abortoncutoff "   c (TRUE, FALSE)  
+
+# frequency for using all instead of only the useful constraints in separation, propagation and enforcement (-1: never, 0: only in first evaluation)
+# [type: int, range: [-1,2147483647], default: 100]
+constraints.linear.eagerfreq "--constraints-linear-eagerfreq "  c (10, 100, 1000)  
+
+# maximal number of presolving rounds the constraint handler participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+constraints.linear.maxprerounds "--constraints-linear-maxprerounds "  c (5, 25, -1)  
+
+# multiplier on propagation frequency, how often the bounds are tightened (-1: never, 0: only at root)
+# [type: int, range: [-1,2147483647], default: 1]
+constraints.linear.tightenboundsfreq "--constraints-linear-tightenboundsfreq "  c (-1, 0, 1)  
+
+# should pairwise constraint comparison be performed in presolving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.linear.presolpairwise "--constraints-linear-presolpairwise "  c (TRUE, FALSE)  
+
+# should hash table be used for detecting redundant constraints in advance
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.linear.presolusehashing "--constraints-linear-presolusehashing "   c (TRUE, FALSE)  
+
+# maximal allowed relative gain in maximum norm for constraint aggregation (0.0: disable constraint aggregation)
+# [type: real, range: [0,1.79769313486232e+308], default: 0]
+constraints.linear.maxaggrnormscale "--constraints-linear-maxaggrnormscale "   c (0, 100, 10000)  
+
+# should presolving search for aggregations in equations
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.linear.aggregatevariables "--constraints-linear-aggregatevariables " c (TRUE, FALSE)  
+
+# should presolving try to simplify inequalities
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+constraints.linear.simplifyinequalities "--constraints-linear-simplifyinequalities "   c (TRUE, FALSE)  
+
+# should dual presolving steps be preformed?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.linear.dualpresolving "--constraints-linear-dualpresolving "   c (TRUE, FALSE)  
+
+#constraints/knapsack/propfreq c (1)  
+
+# should disaggregation of knapsack constraints be allowed in preprocessing?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.knapsack.disaggregation "--constraints-knapsack-disaggregation "   c (TRUE, FALSE)  
+# should presolving try to simplify knapsacks
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+constraints.knapsack.simplifyinequalities "--constraints-knapsack-simplifyinequalities "   c (FALSE, TRUE)  
+
+# should negated clique information be used in solving process
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.knapsack.negatedclique "--constraints-knapsack-negatedclique " c (TRUE, FALSE)  
+
+
+# should pairwise constraint comparison be performed in presolving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.knapsack.presolpairwise "--constraints-knapsack-presolpairwise "   c (TRUE, FALSE)  
+
+# should hash table be used for detecting redundant constraints in advance
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.knapsack.presolusehashing "--constraints-knapsack-presolusehashing " c (TRUE, FALSE)  
+
+# should dual presolving steps be preformed?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.knapsack.dualpresolving "--constraints-knapsack-dualpresolving "   c (TRUE, FALSE)  
+
+# should pairwise constraint comparison be performed in presolving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.logicor.presolpairwise "--constraints-logicor-presolpairwise "  c (TRUE, FALSE)  
+
+# should hash table be used for detecting redundant constraints in advance
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.logicor.presolusehashing "--constraints-logicor-presolusehashing "   c (TRUE, FALSE)  
+
+# should pairwise constraint comparison be performed in presolving?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.setppc.presolpairwise "--constraints-setppc-presolpairwise "   c (TRUE, FALSE)  
+
+# should hash table be used for detecting redundant constraints in advance
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+constraints.setppc.presolusehashing "--constraints-setppc-presolusehashing "  c (TRUE, FALSE)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 0]
+presolving.boundshift.maxrounds "--presolving-boundshift-maxrounds "   c (0, -1)  
+# absolute value of maximum shift
+# [type: longint, range: [0,9223372036854775807], default: 9223372036854775807]
+presolving.boundshift.maxshift "--presolving-boundshift-maxshift "  c (1000, 9223372036854775807)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.dualfix.maxrounds "--presolving-dualfix-maxrounds "   c (-1, 0)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.implics.maxrounds "--presolving-implics-maxrounds "   c (-1, 0)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.inttobinary.maxrounds "--presolving-inttobinary-maxrounds "  c (-1, 0)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.probing.maxrounds "--presolving-probing-maxrounds "   c (-1, 0, 1)  
+
+# maximal number of runs, probing participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 1]
+presolving.probing.maxruns "--presolving-probing-maxruns "   c (1, -1)  
+
+# maximal number of propagation rounds in probing subproblems (-1: no limit, 0: auto)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.probing.proprounds "--presolving-probing-proprounds "   c (-1, 0, 1, 5)  
+
+# maximal number of fixings found, until probing is interrupted (0: don't iterrupt)
+# [type: int, range: [0,2147483647], default: 50]
+presolving.probing.maxfixings "--presolving-probing-maxfixings "  c (50, 0)  
+
+# maximal number of successive probings without fixings, until probing is aborted (0: don't abort)
+# [type: int, range: [0,2147483647], default: 2000]
+presolving.probing.maxuseless "--presolving-probing-maxuseless "  c (100, 2000, 10000)  
+
+# maximal number of successive probings without fixings, bound changes, and implications, until probing is aborted (0: don't abort)
+# [type: int, range: [0,2147483647], default: 100]
+presolving.probing.maxtotaluseless "--presolving-probing-maxtotaluseless "  c (10, 100, 1000)  
+
+# maximal number of presolving rounds the presolver participates in (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+presolving.trivial.maxrounds "--presolving-trivial-maxrounds "  c (-1, 0)  
+
+# maximal plunging depth, before new best node is forced to be selected (-1 for dynamic setting)
+# [type: int, range: [-1,2147483647], default: -1]
+nodeselection.estimate.maxplungedepth "--nodeselection-estimate-maxplungedepth "   c (-1, 100000)  
+
+# maximal quotient (estimate - lowerbound).(cutoffbound - lowerbound) where plunging is performed
+# [type: real, range: [0,1.79769313486232e+308], default: 0.25]
+nodeselection.estimate.maxplungequot "--nodeselection-estimate-maxplungequot "  c (0.1, 0.25, 0.5)  
+
+# frequency at which the best node instead of the best estimate is selected (0: never)
+# [type: int, range: [0,2147483647], default: 10]
+nodeselection.estimate.bestnodefreq "--nodeselection-estimate-bestnodefreq "   c (10, 2, 0)  
+
+# weight in score calculations for conflict score
+# [type: real, range: [-1.79769313486232e+308,1.79769313486232e+308], default: 0.01]
+branching.relpscost.conflictweight "--branching-relpscost-conflictweight "   c (0.01, 0)  
+
+# weight in score calculations for conflict length score
+# [type: real, range: [-1.79769313486232e+308,1.79769313486232e+308], default: 0]
+branching.relpscost.conflictlengthweight "--branching-relpscost-conflictlengthweight "   c (0, 0.001)  
+
+# weight in score calculations for inference score
+# [type: real, range: [-1.79769313486232e+308,1.79769313486232e+308], default: 0.0001]
+branching.relpscost.inferenceweight "--branching-relpscost-inferenceweight "   c (0.0001, 0)  
+
+# weight in score calculations for cutoff score
+# [type: real, range: [-1.79769313486232e+308,1.79769313486232e+308], default: 0.0001]
+branching.relpscost.cutoffweight "--branching-relpscost-cutoffweight "   c (0.0001, 0)  
+
+# minimal value for minimum pseudo cost size to regard pseudo cost value as reliable
+# [type: real, range: [0,1.79769313486232e+308], default: 1]
+branching.relpscost.minreliable "--branching-relpscost-minreliable "   c (1, 4)  
+
+# maximal value for minimum pseudo cost size to regard pseudo cost value as reliable
+# [type: real, range: [0,1.79769313486232e+308], default: 8]
+branching.relpscost.maxreliable "--branching-relpscost-maxreliable "  c (1, 4, 8, 16)  
+
+# maximal number of further variables evaluated without better score
+# [type: int, range: [1,2147483647], default: 8]
+branching.relpscost.maxlookahead "--branching-relpscost-maxlookahead "   c (4, 8, 16, 32)  
+
+# maximal number of candidates initialized with strong branching per node
+# [type: int, range: [0,2147483647], default: 100]
+branching.relpscost.initcand "--branching-relpscost-initcand "  c (50, 100, 200)  
+
+# iteration limit for strong branching initializations of pseudo cost entries (0: auto)
+# [type: int, range: [0,2147483647], default: 0]
+branching.relpscost.inititer "--branching-relpscost-inititer "   c (0, 10, 100)  
+
+# maximal number of bound tightenings before the node is reevaluated (-1: unlimited)
+# [type: int, range: [-1,2147483647], default: 5]
+branching.relpscost.maxbdchgs "--branching-relpscost-maxbdchgs "  c (1, 5, 20, -1)  
+
+# frequency for calling primal heuristic <actconsdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.actconsdiving.freq "--heuristics-actconsdiving-freq "   c (-1, 10, 0)  
+
+# frequency for calling primal heuristic <coefdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.coefdiving.freq "--heuristics-coefdiving-freq "   c (-1, 0, 5, 10, 20)  
+
+# frequency offset for calling primal heuristic <coefdiving>
+# [type: int, range: [0,2147483647], default: 1]
+heuristics.coefdiving.freqofs "--heuristics-coefdiving-freqofs "   c (0, 1)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.coefdiving.maxlpiterquot "--heuristics-coefdiving-maxlpiterquot "   c (0.02, 0.05, 0.1)  
+
+# frequency for calling primal heuristic <crossover> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 30]
+heuristics.crossover.freq "--heuristics-crossover-freq "   c (-1, 0, 10, 30)  
+
+# number of solutions to be taken into account
+# [type: int, range: [2,2147483647], default: 3]
+heuristics.crossover.nusedsols "--heuristics-crossover-nusedsols "   c (2, 3, 5)  
+
+# number of nodes without incumbent change that heuristic should wait
+# [type: longint, range: [0,9223372036854775807], default: 200]
+heuristics.crossover.nwaitingnodes "--heuristics-crossover-nwaitingnodes "  c (0, 50, 200, 1000)  
+
+# contingent of sub problem nodes in relation to the number of nodes of the original problem
+# [type: real, range: [0,1], default: 0.1]
+heuristics.crossover.nodesquot "--heuristics-crossover-nodesquot "   c (0.05, 0.1, 0.2)  
+
+# minimum percentage of integer variables that have to be fixed 
+# [type: real, range: [0,1], default: 0.666]
+heuristics.crossover.minfixingrate "--heuristics-crossover-minfixingrate "   c (0.5, 0.666, 0.8)  
+
+# should the choice which sols to take be randomized?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.crossover.randomization "--heuristics-crossover-randomization "   c (TRUE, FALSE)  
+
+# should the nwaitingnodes parameter be ignored at the root node?
+# [type: bool, range: {TRUE,FALSE}, default: FALSE]
+heuristics.crossover.dontwaitatroot "--heuristics-crossover-dontwaitatroot "   c (TRUE, FALSE)  
+
+# frequency for calling primal heuristic <dins> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.dins.freq "--heuristics-dins-freq "   c (-1, 0, 30)  
+
+# frequency for calling primal heuristic <feaspump> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 20]
+heuristics.feaspump.freq "--heuristics-feaspump-freq "   c (0, 10, 20)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.01]
+heuristics.feaspump.maxlpiterquot "--heuristics-feaspump-maxlpiterquot "   c (0.01, 0.05, 0.2)  
+
+# additional number of allowed LP iterations
+# [type: int, range: [0,2147483647], default: 1000]
+heuristics.feaspump.maxlpiterofs "--heuristics-feaspump-maxlpiterofs "   c (200, 1000, 5000)  
+
+# total number of feasible solutions found up to which heuristic is called (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 2]
+heuristics.feaspump.maxsols "--heuristics-feaspump-maxsols "   c (2, 3, 5)  
+
+# factor by which the regard of the objective is decreased in each round, 1.0 for dynamic
+# [type: real, range: [0,1], default: 1]
+heuristics.feaspump.objfactor "--heuristics-feaspump-objfactor "   c (0.95, 1)  
+
+# maximal number of pumping rounds without fractionality improvement (-1: no limit)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.feaspump.maxstallloops "--heuristics-feaspump-maxstallloops "   c (3, 10, 50)  
+
+# maximum length of cycles to be checked explicitly in each round
+# [type: int, range: [1,100], default: 3]
+heuristics.feaspump.cyclelength "--heuristics-feaspump-cyclelength "   c (3, 10)  
+
+# should the feasibility pump be called at root node before cut separation?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.feaspump.beforecuts "--heuristics-feaspump-beforecuts "   c (TRUE, FALSE)  
+
+# frequency for calling primal heuristic <fixandinfer> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.fixandinfer.freq "--heuristics-fixandinfer-freq "   c (-1, 0, 20)  
+
+# frequency for calling primal heuristic <fracdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.fracdiving.freq "--heuristics-fracdiving-freq "   c (-1, 0, 5, 10, 20)  
+
+# frequency offset for calling primal heuristic <fracdiving>
+# [type: int, range: [0,2147483647], default: 3]
+heuristics.fracdiving.freqofs "--heuristics-fracdiving-freqofs "   c (3, 0)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.fracdiving.maxlpiterquot "--heuristics-fracdiving-maxlpiterquot "   c (0.05, 0.1, 0.02)  
+
+# frequency for calling primal heuristic <guideddiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.guideddiving.freq "--heuristics-guideddiving-freq "  c (-1, 0, 5, 10, 20)  
+
+# frequency offset for calling primal heuristic <guideddiving>
+# [type: int, range: [0,2147483647], default: 7]
+heuristics.guideddiving.freqofs "--heuristics-guideddiving-freqofs "   c (0, 7)  
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.guideddiving.maxlpiterquot "--heuristics-guideddiving-maxlpiterquot "   c (0.05, 0.1, 0.02)  
+
+# frequency for calling primal heuristic <intdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.intdiving.freq "--heuristics-intdiving-freq "   c (-1, 0, 10)  
+
+# frequency for calling primal heuristic <intshifting> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.intshifting.freq "--heuristics-intshifting-freq "   c (-1, 0, 5, 10, 20)  
+
+# frequency for calling primal heuristic <linesearchdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.linesearchdiving.freq "--heuristics-linesearchdiving-freq "   c (-1, 0, 5, 10, 20)
+
+# frequency offset for calling primal heuristic <linesearchdiving>
+# [type: int, range: [0,2147483647], default: 6]
+heuristics.linesearchdiving.freqofs "--heuristics-linesearchdiving-freqofs "   c (0, 6)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.linesearchdiving.maxlpiterquot "--heuristics-linesearchdiving-maxlpiterquot "   c (0.05, 0.1, 0.02)  
+
+# frequency for calling primal heuristic <localbranching> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.localbranching.freq "--heuristics-localbranching-freq "   c (-1, 0, 20)  
+
+# radius (using Manhattan metric) of the incumbent's neighborhood to be searched
+# [type: int, range: [1,2147483647], default: 18]
+heuristics.localbranching.neighborhoodsize "--heuristics-localbranching-neighborhoodsize "  c (10, 18, 30) 
+
+# frequency for calling primal heuristic <mutation> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.mutation.freq "--heuristics-mutation-freq "   c (-1, 0, 20)  
+
+# percentage of integer variables that have to be fixed 
+# [type: real, range: [1e-06,0.999999], default: 0.8]
+heuristics.mutation.minfixingrate "--heuristics-mutation-minfixingrate "   c (0.5, 0.8, 0.9) 
+
+# frequency for calling primal heuristic <objpscostdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 20]
+heuristics.objpscostdiving.freq "--heuristics-objpscostdiving-freq "   c (-1, 0, 10, 20)  
+
+# frequency offset for calling primal heuristic <objpscostdiving>
+# [type: int, range: [0,2147483647], default: 4]
+heuristics.objpscostdiving.freqofs "--heuristics-objpscostdiving-freqofs "  c (4, 0)  
+
+# frequency for calling primal heuristic <octane> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.octane.freq "--heuristics-octane-freq "   c (-1, 0, 10, 20)  
+
+# frequency for calling primal heuristic <oneopt> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 1]
+heuristics.oneopt.freq "--heuristics-oneopt-freq "   c (1, 0, 10)  
+
+# maximal depth level to call primal heuristic <oneopt> (-1: no limit)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.oneopt.maxdepth "--heuristics-oneopt-maxdepth "   c (10, -1)  
+
+# should the objective be weighted with the potential shifting value when sorting the shifting candidates?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.oneopt.weightedobj "--heuristics-oneopt-weightedobj "  c (TRUE, FALSE)  
+
+# should the heuristic be called before and during the root node?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.oneopt.duringroot "--heuristics-oneopt-duringroot "  c (TRUE, FALSE)  
+
+# frequency for calling primal heuristic <pscostdiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.pscostdiving.freq "--heuristics-pscostdiving-freq "   c (-1, 0, 5, 10, 20)
+
+# frequency offset for calling primal heuristic <pscostdiving>
+# [type: int, range: [0,2147483647], default: 2]
+heuristics.pscostdiving.freqofs "--heuristics-pscostdiving-freqofs "   c (0, 2)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.pscostdiving.maxlpiterquot "--heuristics-pscostdiving-maxlpiterquot "   c (0.05, 0.1, 0.02)  
+
+# frequency for calling primal heuristic <rens> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 0]
+heuristics.rens.freq "--heuristics-rens-freq "   c (0, 10, 20)  
+
+# frequency offset for calling primal heuristic <rens>
+# [type: int, range: [0,2147483647], default: 0]
+heuristics.rens.freqofs "--heuristics-rens-freqofs "   c (0, 20)  
+
+# minimum percentage of integer variables that have to be fixable 
+# [type: real, range: [0,1], default: 0.5]
+heuristics.rens.minfixingrate "--heuristics-rens-minfixingrate "   c (0.5, 0.3, 0.66, 0.8)  
+
+# maximum number of nodes to regard in the subproblem
+# [type: longint, range: [0,9223372036854775807], default: 5000]
+heuristics.rens.maxnodes "--heuristics-rens-maxnodes "   c (5000, 1000, 20000)  
+
+# should general integers get binary bounds [floor(.),ceil(.)] ?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.rens.binarybounds "--heuristics-rens-binarybounds "   c (TRUE, FALSE)  
+
+# number of nodes added to the contingent of the total nodes
+# [type: longint, range: [0,9223372036854775807], default: 500]
+heuristics.rens.nodesofs "--heuristics-rens-nodesofs "   c (500, 1000, 20000) 
+
+# factor by which RENS should at least improve the incumbent  
+# [type: real, range: [0,1], default: 0.01]
+heuristics.rens.minimprove "--heuristics-rens-minimprove "   c (0.01, 0.1)  
+
+# should subproblem be created out of the rows in the LP rows?
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.rens.uselprows "--heuristics-rens-uselprows "  c (TRUE, FALSE)  
+
+# frequency for calling primal heuristic <rins> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.rins.freq "--heuristics-rins-freq "  c (-1, 0, 20)  
+
+# frequency offset for calling primal heuristic <rins>
+# [type: int, range: [0,2147483647], default: 5]
+heuristics.rins.freqofs "--heuristics-rins-freqofs "   c (0, 5)  
+
+# frequency for calling primal heuristic <rootsoldiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 20]
+heuristics.rootsoldiving.freq "--heuristics-rootsoldiving-freq "  c (20, 0, 10, -1) 
+
+# frequency offset for calling primal heuristic <rootsoldiving>
+# [type: int, range: [0,2147483647], default: 5]
+heuristics.rootsoldiving.freqofs "--heuristics-rootsoldiving-freqofs "   c (0, 5) 
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.01]
+heuristics.rootsoldiving.maxlpiterquot "--heuristics-rootsoldiving-maxlpiterquot "   c (0.05, 0.1, 0.02, 0.01)  
+
+# frequency for calling primal heuristic <rounding> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 1]
+heuristics.rounding.freq "--heuristics-rounding-freq "  c (1, 10, 0, -1)  
+
+# frequency for calling primal heuristic <shifting> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.shifting.freq "--heuristics-shifting-freq "   c (10, 0, 5, 20, -1)  
+
+# frequency for calling primal heuristic <simplerounding> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 1]
+heuristics.simplerounding.freq "--heuristics-simplerounding-freq "  c (1, 0, 10, -1)  
+
+# frequency for calling primal heuristic <trivial> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 0]
+heuristics.trivial.freq "--heuristics-trivial-freq "   c (0, 10, -1)  
+
+# frequency for calling primal heuristic <twoopt> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: -1]
+heuristics.twoopt.freq "--heuristics-twoopt-freq "   c (-1, 0, 10)  
+
+
+# frequency for calling primal heuristic <veclendiving> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 10]
+heuristics.veclendiving.freq "--heuristics-veclendiving-freq "  c (10, 5, 20, 0, -1)  
+
+# frequency offset for calling primal heuristic <veclendiving>
+# [type: int, range: [0,2147483647], default: 4]
+heuristics.veclendiving.freqofs "--heuristics-veclendiving-freqofs "  c (4, 0)  
+
+# maximal fraction of diving LP iterations compared to node LP iterations
+# [type: real, range: [0,1.79769313486232e+308], default: 0.05]
+heuristics.veclendiving.maxlpiterquot "--heuristics-veclendiving-maxlpiterquot "   c (0.05, 0.1, 0.02)  
+
+# frequency for calling primal heuristic <zirounding> (-1: never, 0: only at depth freqofs)
+# [type: int, range: [-1,2147483647], default: 1]
+heuristics.zirounding.freq "--heuristics-zirounding-freq "   c (1, 0, 10, -1)  
+
+# determines maximum number of rounding loops
+# [type: int, range: [0,2147483647], default: 2]
+heuristics.zirounding.maxroundingloops "--heuristics-zirounding-maxroundingloops "   c (2, 5)  
+
+# flag to determine if Zirounding is deactivated after a certain percentage of unsuccessful calls
+# [type: bool, range: {TRUE,FALSE}, default: TRUE]
+heuristics.zirounding.stopziround "--heuristics-zirounding-stopziround "   c (TRUE, FALSE)  
+
+# frequency for calling propagator <pseudoobj> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 1]
+propagating.pseudoobj.freq "--propagating-pseudoobj-freq "   c (1, -1, 0)  
+
+# maximal number of variables to look at in a single propagation round (-1: process all variables)
+# [type: int, range: [-1,2147483647], default: 100]
+propagating.pseudoobj.maxcands "--propagating-pseudoobj-maxcands "   c (100, -1, 1000)  
+
+# frequency for calling propagator <rootredcost> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 1]
+propagating.rootredcost.freq "--propagating-rootredcost-freq "  c (1, -1, 0)  
+
+# frequency for calling propagator <vbounds> (-1: never, 0: only in root node)
+# [type: int, range: [-1,2147483647], default: 1]
+propagating.vbounds.freq "--propagating-vbounds-freq "  c (1, -1, 0)  

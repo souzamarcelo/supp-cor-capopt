@@ -1,0 +1,14 @@
+executable: ./scipcli
+instance-command: --instance
+effort-limit-command: --time
+effort-limit: 60
+effort-type: time
+budget-type: timeout
+capping: True
+penalty: best-so-far
+envelope: profile
+strategy: elitist
+ar: exp
+ac: worst
+p: 0.1
+alpha: 10

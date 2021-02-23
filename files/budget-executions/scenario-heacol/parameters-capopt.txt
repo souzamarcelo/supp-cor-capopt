@@ -1,0 +1,13 @@
+executable: ./heacol
+seed-command: -r
+effort-limit-command: -s
+effort-limit: 1000000000
+effort-type: other
+capping: True
+penalty: best-so-far
+envelope: profile
+strategy: elitist
+ar: exp
+ac: worst
+p: 0.1
+alpha: 10

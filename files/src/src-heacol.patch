@@ -1,0 +1,391 @@
+Somente em src-heacol-original/: graph.txt
+diff -aur src-heacol-original/inputGraph.cpp src-heacol-modified/inputGraph.cpp
+--- src-heacol-original/inputGraph.cpp	2014-10-28 12:44:52.000000000 -0200
++++ src-heacol-modified/inputGraph.cpp	2020-03-16 21:50:44.000000000 -0300
+@@ -16,8 +16,13 @@
+ 	int edges=-1;
+ 	int blem=1;
+ 	int multiple = 0;
+-	while(!IN.eof()) {
++    
++    int linesToRead = 1;
++
++	while(linesToRead > 0) {
+ 		line++;
++        linesToRead--;
++
+ 		IN.get(c);
+ 		if (IN.eof()) break;
+ 		switch (c) {
+@@ -32,6 +37,7 @@
+ 			}
+ 			IN >> g.n;
+ 			IN >> edges;
++            linesToRead = edges;
+ 			blem=0;
+ 			g.resize(g.n);
+ 			break;
+@@ -56,7 +62,7 @@
+ 			IN >> node1 >> node2;
+ 			if (node1 < 1 || node1 > g.n || node2 < 1 || node2 > g.n) {
+ 				cerr << "File " << file << " line " << line << ":\n";
+-				cerr << "Node " << node1 << " or " << node2 << " is out of range!\n";
++				cerr << "Node " << node1 << " or " << node2 << " is out of range!\n"; 
+ 				exit(-1);
+ 			}
+ 			node1--;
+@@ -76,7 +82,7 @@
+ 				}
+ 			}
+ 			g[node1][node2] =1;
+-			g[node2][node1] =1;
++			//g[node2][node1] =1;
+ 			break;
+ 		case 'd':
+ 		case 'v':
+@@ -88,6 +94,7 @@
+ 		case 'c':
+ 			IN.putback('c');
+ 			IN.get(str,399,'\n');
++            linesToRead++;
+ 			break;
+ 		default:
+ 			cerr << "File " << file << " line " << line << ":\n";
+@@ -97,6 +104,14 @@
+ 		IN.get(); // Kill the newline;
+ 	}
+ 	IN.close();
++
++    for(int i = 0; i < g.n; i++) {
++        for(int j = 0; j < g.n; j++) {
++            if(g[i][j] == 1)
++                g[j][i] = 1;
++        }
++    }
++
+ 	if (multiple) {
+ 		cerr << multiple << " multiple edges encountered\n";
+ 	}
+diff -aur src-heacol-original/main.cpp src-heacol-modified/main.cpp
+--- src-heacol-original/main.cpp	2016-01-29 06:59:28.000000000 -0200
++++ src-heacol-modified/main.cpp	2020-03-16 21:50:44.000000000 -0300
+@@ -40,6 +40,8 @@
+ 
+ unsigned long long numConfChecks;
+ 
++int bestFound = INT_MAX; //Modification Marcelo
++
+ void usage() {
+ 	cout<<"Hybrid EA for Graph Colouring\n\n"
+ 		<<"USAGE:\n"
+@@ -57,6 +59,9 @@
+ 		<<"                                     4 = GGA (2 parents)\n"
+ 		<<"                                     5 = nPoint (2 parents)\n"
+ 		<<"                 DEFAULT = 1)\n"
++        <<"-t <int>        (Initial value for tabu tenure. Can be anything up to 100. DEFAULT = 5)\n"
++        <<"-m <int>        (Multiplier m for tabu tenure update: tenure = m * numberOfConflicts + rand(c). Should be a value in [0, 1]. DEFAULT = 0.6)\n"
++        <<"-c <int>        (Range c for tabu tenure update: tenure = m * numberOfConflicts + rand(c). Can be anything up to 100. DEFAULT = 10)\n"
+ 		<<"-d              (If present population diversity is measured after each crossover)"
+ 		<<"****\n";
+ 	exit(1);
+@@ -74,6 +79,10 @@
+ 	unsigned long long maxChecks = 100000000;
+ 	vector<int> parents;
+ 	
++    int tenureInitialValue = 5;
++    float tenureMultiplier = 0.6;
++    int tenureRandRange = 10;
++    
+ 	//This variable keeps count of the number of times information about the instance is looked up 
+ 	numConfChecks = 0;
+ 	
+@@ -97,8 +106,14 @@
+ 		  xOverType = atoi(argv[++i]);
+ 		} else if (strcmp("-d", argv[i]) == 0 ) {
+ 		  measuringDiversity = true;
++        } else if (strcmp("-t", argv[i]) == 0 ) {
++		  tenureInitialValue = atoi(argv[++i]);
++        } else if (strcmp("-m", argv[i]) == 0 ) {
++		  tenureMultiplier = atof(argv[++i]);
++        } else if (strcmp("-c", argv[i]) == 0 ) {
++		  tenureRandRange = atoi(argv[++i]);
+ 		}else {
+-			cout<<"Hybrid Evolutionary Algorithm using <"<<argv[i]<<">\n\n";
++			//cout<<"Hybrid Evolutionary Algorithm using <"<<argv[i]<<">\n\n";
+ 			inputDimacsGraph(g, argv[i]);
+ 		}
+ 	}
+@@ -113,17 +128,17 @@
+ 	if(targetCols < 2 || targetCols > g.n) targetCols = 2;
+   	
+ 	//Now set up some output files
+-	ofstream timeStream, confStream;
+-	timeStream.open("teffort.txt"); confStream.open("ceffort.txt");
+-	if (timeStream.fail() || confStream.fail()){cout << "ERROR OPENING output FILE";exit(1);}
++	//ofstream timeStream, confStream;
++	//timeStream.open("teffort.txt"); confStream.open("ceffort.txt");
++	//if (timeStream.fail() || confStream.fail()){cout << "ERROR OPENING output FILE";exit(1);}
+ 
+ 	//Do a check to see if we have the empty graph. If so, end immediately.
+ 	if(g.nbEdges <= 0){
+-		confStream<<"1\t0\n0\tX\t0\n";
+-		timeStream<<"1\t0\n0\tX\t0\n";
++		//confStream<<"1\t0\n0\tX\t0\n";
++		//timeStream<<"1\t0\n0\tX\t0\n";
+ 		if(verbose>=1) cout<<"Graph has no edges. Optimal solution is obviously using one colour. Exiting."<<endl;
+-		confStream.close();
+-		timeStream.close();
++		//confStream.close();
++		//timeStream.close();
+ 		exit(1);
+ 	}
+ 		
+@@ -146,64 +161,82 @@
+ 	
+ 	//Generate the initial value for k using greedy or dsatur algorithm
+ 	k = generateInitialK(g, constructiveAlg, bestColouring);
+-	//..and write the results to the output file
++    bestFound = k;
++    cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++	
++    //..and write the results to the output file
+ 	int duration = int(((double)(clock()-clockStart)/CLOCKS_PER_SEC)*1000);
+ 	if(verbose>=1) cout<<setw(5)<<k<<setw(11)<<duration<<"ms\t"<<numConfChecks<<" (via constructive)"<<endl;
+-	confStream<<k<<"\t"<<numConfChecks<<"\n";
+-	timeStream<<k<<"\t"<<duration<<"\n";
++	//confStream<<k<<"\t"<<numConfChecks<<"\n";
++	//timeStream<<k<<"\t"<<duration<<"\n";
++    //cout << duration << " " << k << "\n"; //Modification Marcelo
++    //cout << k << "\n"; //Modification Marcelo
++    //cout << numConfChecks << ";" << k << "\n"; //Modification Marcelo
+ 	if(k<=targetCols){
+ 		if(verbose>=1) cout<<"\nSolution with  <="<<targetCols<<" colours has been found. Ending..."<<endl;
+-		confStream<<"1\t"<<"X"<<"\n";
+-		timeStream<<"1\t"<<"X"<<"\n";
++		//confStream<<"1\t"<<"X"<<"\n";
++		//timeStream<<"1\t"<<"X"<<"\n";
+ 	}
+ 
+ 	//MAIN ALGORITHM
+ 	k--;
+ 	while(numConfChecks < maxChecks && k+1 > targetCols){
+ 		solFound = false;
+-
+ 		//First build the population
+ 		for(i=0; i<popSize; i++){
+ 			//Build a solution using modified DSatur algorithm
+ 			makeInitSolution(g, population[i], k, verbose);
+-			//Check to see whether this solution is alrerady optimal or if the cutoff point has been reached. If so, we end
++            cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++			
++            //Check to see whether this solution is alrerady optimal or if the cutoff point has been reached. If so, we end
+ 			if(solIsOptimal(population[i],g,k)){
+ 				solFound = true;
+ 				for(int j=0; j<g.n; j++)osp[j]=population[i][j];
+ 				break;
+ 			}
++			
+ 			if(numConfChecks >= maxChecks){
+ 				for(int j=0; j<g.n; j++)osp[j]=population[i][j];
+ 				break;
+ 			}
++			
+ 			//Improve each solution via tabu search and record their costs
+-			popCosts[i] = tabu(g, population[i], k, maxIterations, 0, neighbors);
+-			//Check to see whether this solution is now optimal or if the cuttoff point is reached. If so, we end
++			popCosts[i] = tabu(g, population[i], k, maxIterations, 0, neighbors, tenureInitialValue, tenureMultiplier, tenureRandRange);
++			cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++            
++            //Check to see whether this solution is now optimal or if the cuttoff point is reached. If so, we end
+ 			if(verbose>=2)cout<<"          -> Individual "<<setw(4)<<i<<" constructed. Cost = "<<popCosts[i]<<endl;
+-			if(popCosts[i] == 0){
++			
++            if(popCosts[i] == 0){
+ 				solFound = true;
+ 				for(int j=0; j<g.n; j++)osp[j]=population[i][j];
+ 				break;
+ 			}
++			
+ 			if(numConfChecks >= maxChecks){
+ 				for(int j=0; j<g.n; j++)osp[j]=population[i][j];
+ 				break;
+ 			}
+ 		}
+ 	
++        cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++	
+ 		//Now evolve the population
+ 		int rIts = 0, oCost = 1, best = INT_MAX;
+ 		while(numConfChecks < maxChecks && !solFound){
+ 		
+ 			//Choose parents and perform crossover to produce a new offspring 		
+ 			doCrossover(xOverType,osp,parents,g,k,population);
+-						
++			cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++            
+ 			//Improve the offspring via tabu search and record its cost
+-			oCost = tabu(g, osp, k, maxIterations, 0, neighbors);
+-			
++			oCost = tabu(g, osp, k, maxIterations, 0, neighbors, tenureInitialValue, tenureMultiplier, tenureRandRange);
++			cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++            
+ 			//Write osp over weaker parent and update popCosts
+ 			replace(population,parents,osp,popCosts,g,oCost);
+-
++            cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++            
+ 			if(verbose>=2){
+ 				cout<<"          -> Offspring "<<setw(5)<<rIts<<" constructed. Cost = "<<oCost;
+ 				if(measuringDiversity) cout<<"\tDiversity = "<<measureDiversity(population,k);
+@@ -220,33 +253,42 @@
+ 		duration = int(((double)(clock()-clockStart)/CLOCKS_PER_SEC)*1000);
+ 		if(solFound){
+ 			if(verbose>=1) cout<<setw(5)<<k<<setw(11)<<duration<<"ms\t"<<numConfChecks<<endl;
+-			confStream<<k<<"\t"<<numConfChecks<<"\n";
+-			timeStream<<k<<"\t"<<duration<<"\n";
++			//confStream<<k<<"\t"<<numConfChecks<<"\n";
++			//timeStream<<k<<"\t"<<duration<<"\n";
++            //cout << duration << " " << k << "\n"; //Modification Marcelo
++            //cout << k << "\n"; //Modification Marcelo
++            //cout << numConfChecks << ";" << k << "\n"; //Modification Marcelo
++            if(k < bestFound) bestFound = k; //Modification Marcelo
++            cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
+ 			//Copy the current solution as the best solution
+ 			for(int i=0; i<g.n; i++) bestColouring[i] = osp[i]-1;
+ 			if(k<=targetCols){
+ 				if(verbose>=1) cout<<"\nSolution with  <="<<targetCols<<" colours has been found. Ending..."<<endl;
+-				confStream<<"1\t"<<"X"<<"\n";
+-				timeStream<<"1\t"<<"X"<<"\n";
++				//confStream<<"1\t"<<"X"<<"\n";
++				//timeStream<<"1\t"<<"X"<<"\n";
+ 				break;
+ 			}
+-		}
+-		else {
++		} else {
+ 			if(verbose>=1) cout<<"\nRun limit exceeded. No solution using "<<k<<" colours was achieved (Checks = "<<numConfChecks<<", "<<duration<<"ms)"<<endl;
+-			confStream<<k<<"\tX\t"<<numConfChecks<<"\n";
+-			timeStream<<k<<"\tX\t"<<duration<<"\n";
++			//confStream<<k<<"\tX\t"<<numConfChecks<<"\n";
++			//timeStream<<k<<"\tX\t"<<duration<<"\n";
+ 		}
++		
++		cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
+ 
+ 		k--;
+ 	}
+ 
+-	ofstream solStrm;
+-	solStrm.open("solution.txt");
+-	solStrm<<g.n<<"\n";
+-	for(int i=0;i<g.n;i++)solStrm<<bestColouring[i]<<"\n";
+-	solStrm.close();
+-
+-        return(0);
++	//ofstream solStrm;
++	//solStrm.open("solution.txt");
++	//solStrm<<g.n<<"\n";
++    //cout << bestFound << "\n"; //Modification Marcelo
++	//for(int i=0;i<g.n;i++)solStrm<<bestColouring[i]<<"\n";
++	//solStrm.close();
++
++    //cout << "Total effort: " << numConfChecks << endl; //Modification Marcelo
++	cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
++    return(0);
+ }
+ 
+ //*********************************************************************
+diff -aur src-heacol-original/Makefile src-heacol-modified/Makefile
+--- src-heacol-original/Makefile	2015-05-11 11:37:32.000000000 -0300
++++ src-heacol-modified/Makefile	2020-03-16 21:50:44.000000000 -0300
+@@ -1,6 +1,6 @@
+ # Makefile for HybridEA
+ 
+-EXEC=HybridEA
++EXEC=heacol
+ 
+ HEADS=diversity.h Graph.h hungarian.h inputGraph.h Kempe.h makesolution.h manipulateArrays.h tabu.h xover.h
+ 
+diff -aur src-heacol-original/manipulateArrays.cpp src-heacol-modified/manipulateArrays.cpp
+--- src-heacol-original/manipulateArrays.cpp	2014-11-14 09:31:44.000000000 -0200
++++ src-heacol-modified/manipulateArrays.cpp	2020-03-16 21:50:44.000000000 -0300
+@@ -1,6 +1,7 @@
+ #include "manipulateArrays.h"
+ 
+ extern unsigned long long numConfChecks;
++extern int bestFound;
+ 
+ void initializeArrays(int ** & nodesByColor, int ** & conflicts, int ** & tabuStatus, int * & nbcPosition, Graph & g, vector<int> &c, int k) {
+ 
+@@ -61,7 +62,7 @@
+ 		nodesInConflict[confPosition[bestNode]] = nodesInConflict[nodesInConflict[0]--];  
+ 	} 
+ 	else {  // If bestNode becomes a conflict node, add it to the list
+-		numConfChecks+=2;
++		numConfChecks+=2;        
+ 		if (!(conflicts[oldColor][bestNode]) && conflicts[bestColor][bestNode]) {
+ 			nodesInConflict[ (confPosition[bestNode] = ++nodesInConflict[0]) ] = bestNode;
+ 		}
+@@ -105,7 +106,3 @@
+ 	delete[] tabuStatus;
+ 	delete[] nbcPosition;
+ }
+-
+-
+-
+-
+diff -aur src-heacol-original/tabu.cpp src-heacol-modified/tabu.cpp
+--- src-heacol-original/tabu.cpp	2014-11-14 09:25:26.000000000 -0200
++++ src-heacol-modified/tabu.cpp	2020-03-16 21:50:44.000000000 -0300
+@@ -5,10 +5,11 @@
+ #include <stdlib.h>
+ 
+ extern unsigned long long numConfChecks;
++extern int bestFound;
+ 
+ using namespace std;
+ 
+-int tabu(Graph &g, vector<int> &c, int k, int maxIterations, int verbose, int **neighbors) 
++int tabu(Graph &g, vector<int> &c, int k, int maxIterations, int verbose, int **neighbors, int tenureInitialValue, float tenureMultiplier, int tenureRandRange) 
+ {
+ 	int ** nodesByColor; // Arrays of nodes for each color
+ 	int * nbcPosition;   // Position of each node in the above array
+@@ -26,7 +27,8 @@
+ 	if (verbose > 2) incVerbose=1;
+ 	int nextVerbose = incVerbose;
+ 
+-	int tabuTenure = 5; //This is effetively a random choice
++	//int tabuTenure = 5; //This is effetively a random choice
++    int tabuTenure = tenureInitialValue;
+ 
+ 	initializeArrays(nodesByColor, conflicts, tabuStatus, nbcPosition, g, c, k);
+ 	// Count the number of conflicts and set up the list nodesInConflict
+@@ -54,6 +56,7 @@
+ 
+ 	//Main TABU LOOP
+ 	while (totalIterations < maxIterations) {
++        cout << numConfChecks << ";" << bestFound << "\n"; //Modification Marcelo
+ 		totalIterations++;
+ 		int nc = nodesInConflict[0];
+ 
+@@ -107,7 +110,8 @@
+ 		totalConflicts = bestValue;
+ 
+ 		//Now update the tabu tenure
+-		tabuTenure = (int)(0.6*nc) + (rand()%10); 
++		//tabuTenure = (int)(0.6*nc) + (rand()%10); 
++        tabuTenure = (int)(tenureMultiplier*nc) + (rand()%tenureRandRange);
+ 
+ 		// check: have we a new globally best solution?
+ 		if (totalConflicts < bestSolutionValue) {
+diff -aur src-heacol-original/tabu.h src-heacol-modified/tabu.h
+--- src-heacol-original/tabu.h	2014-11-14 09:28:12.000000000 -0200
++++ src-heacol-modified/tabu.h	2020-03-16 21:50:44.000000000 -0300
+@@ -6,6 +6,6 @@
+ 
+ using namespace std;
+ 
+-int tabu(Graph &g, vector<int> &c, int k, int maxIterations, int verbose, int **neighbors);
++int tabu(Graph &g, vector<int> &c, int k, int maxIterations, int verbose, int **neighbors, int tenureInitialValue, float tenureMultiplier, int tenureRandRange);
+ 
+ #endif

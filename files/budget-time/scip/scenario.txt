@@ -1,0 +1,7 @@
+parameterFile = "./parameters-scip.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxTime = 21000
+digits = 2
+targetRunner = "./capopt/capopt.py"
+deterministic = TRUE

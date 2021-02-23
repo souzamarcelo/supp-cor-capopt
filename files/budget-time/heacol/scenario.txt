@@ -1,0 +1,6 @@
+parameterFile = "./parameters-heacol.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxTime = 3200
+digits = 2
+targetRunner = "./capopt/capopt.py"

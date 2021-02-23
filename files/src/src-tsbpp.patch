@@ -1,0 +1,204 @@
+Somente em src-tsbpp-original/: 2d.in
+Somente em src-tsbpp-original/: 3d.in
+diff -aur src-tsbpp-original/driver.c src-tsbpp-modified/driver.c
+--- src-tsbpp-original/driver.c	2002-08-30 09:56:50.000000000 -0300
++++ src-tsbpp-modified/driver.c	2021-02-20 14:37:12.000000000 -0300
+@@ -6,20 +6,18 @@
+ {                                           /* driver program for the TSPACK code */
+ 	int    i, j, value, correct;
+ 	int    d, n, lb, ub0, ub;
+-	float  timeLimit;
+-	char   fname[40];
++	double  timeLimit = INFINITY;
++	char   fname[400];
+ 	FILE   *file;
+ 
+ 	int    **w, **x;
+ 	int    *W, *b;
+ 
+-	if (argc != 3) {
+-	   printf("\n Usage: %s totalTime istName\n",argv[0]);
+-	   exit(0);
+-	}
+-
+-	sscanf(argv[1], "%f", &timeLimit);
+-	sscanf(argv[2], "%s", fname);
++	for(int i = 0; i < argc; i++)
++		if (strcmp(argv[i], "--instance") == 0)
++			sscanf(argv[i + 1], "%s", fname);
++	
++	setParameters(argc, argv);
+ 
+ 	file = fopen(fname, "r");
+ 	fscanf(file, "%d", &d);
+@@ -67,7 +65,7 @@
+ 	}
+ 
+ 	/* print the solution value */
+-	printf(" LB = %4d iUB = %4d fUB = %4d\n", lb, ub0, ub);
++	//printf(" LB = %4d iUB = %4d fUB = %4d\n", lb, ub0, ub);
+ 
+ 	/* memory de-allocation */
+ 	for (i = 0; i < d; i++) {
+diff -aur src-tsbpp-original/TSpack.c src-tsbpp-modified/TSpack.c
+--- src-tsbpp-original/TSpack.c	2002-08-30 10:44:06.000000000 -0300
++++ src-tsbpp-modified/TSpack.c	2021-02-22 23:28:57.251364797 -0300
+@@ -26,11 +26,29 @@
+ 
+ #include "TSpack.h"
+ 
++int Kmax = 3;
++int Dmax = 2;
++int Kten = 20;
++float ALPHA = 3.5;
++int whichP = 0;
++int whichL = 1;
++
++void setParameters(int argc, char **argv) {
++	for(int i = 0; i < argc; i++) {
++		if (strcmp(argv[i], "--Kmax") == 0) sscanf(argv[i + 1], "%d", &Kmax);
++		if (strcmp(argv[i], "--Dmax") == 0) sscanf(argv[i + 1], "%d", &Dmax);
++		if (strcmp(argv[i], "--Kten") == 0) sscanf(argv[i + 1], "%d", &Kten);
++		if (strcmp(argv[i], "--ALPHA") == 0) sscanf(argv[i + 1], "%f", &ALPHA);
++		if (strcmp(argv[i], "--whichP") == 0) sscanf(argv[i + 1], "%d", &whichP);
++		if (strcmp(argv[i], "--whichL") == 0) sscanf(argv[i + 1], "%d", &whichL);
++	}
++}
++
+ /* SECTION a): core procedures */
+ 
+ /* outer loop of the tabu search algorithm */
+ int TSpack(
+-	int d,    int n,   int **w, int *W, int lb, float TL,
++	int d,    int n,   int **w, int *W, int lb, double TL,
+ 	int *ub0, int **x, int *b
+     )
+ {
+@@ -38,11 +56,13 @@
+ 	int    nb, i, j, toReturn;
+ 	int    dv, K, D, t;
+ 	int    nIT = 0;
+-        float  st, et, tt;
++        double  st, et, tt;
+ 
+ 	int    **cw, **cx, *cb, cnb;
+ 	double *ff;
+ 
++    setbuf(stdout, NULL);
++
+ 	/* memory allocation of general TS structures */
+ 	kt = (int*)calloc(Kmax, sizeof(int));
+ 	lm = (int*)calloc(Kmax, sizeof(int));
+@@ -70,6 +90,7 @@
+ 	   goto end;
+ 	}
+ 	if (nb == lb) {
++       printf("%d;%d\n", nIT + 1, nb);
+ 	   toReturn = nb;
+ 	   goto end;
+ 	}
+@@ -85,6 +106,7 @@
+ 	}
+ 
+ 	second(&st);
++
+ 	/* external loop */
+ 	D = 1; tt = 0.0;
+ 	while ((tt < TL) && (nIT < nITmax)) {
+@@ -94,7 +116,7 @@
+ 	      t = target(D, ff, cnb);
+ 
+ 	      /* internal loop */
+-	      while (!dv && (nb > lb) && (K < cnb) && (tt < TL) && (nIT < nITmax)) {
++	      while (!dv && (nb > lb) && (K < cnb) && (tt < TL) && (nIT < nITmax)) {                
+ 	            int Kin = K, _cnb = cnb, flagNewTarget = 0;
+ 
+ 	            nIT++;
+@@ -126,6 +148,8 @@
+ 	               }
+ 	            }
+ 
++				printf("%d;%d\n", nIT, nb);
++
+ 	            if   ((cnb == _cnb) && (K == Kin)) nCC++; 
+ 	            else nCC = 0;
+ 
+@@ -212,7 +236,7 @@
+ int search(
+ 	int   t,  int *K,  int *dv,
+ 	int   nb, int d,   int n,   int **w,
+-	int   *W, int **x, int *b,  double *ff, float timeLeft
++	int   *W, int **x, int *b,  double *ff, double timeLeft
+     )
+ {
+ 	int    next, exit;
+@@ -220,7 +244,7 @@
+ 	int    nnb, bK;
+ 	int    sn, snb, tn, tnb, bnb;
+ 
+-	float  st, et;
++	double  st, et;
+ 	double pBest = INFINITY;
+ 
+ 	int    **sw, **sx, *sb;
+@@ -872,8 +896,9 @@
+ }
+ 
+ void second(
+-	float *tempo
++	double *tempo
+      )
+ {
++	//*tempo = (double) time(NULL);
+ 	*tempo = 0.0;
+ }
+diff -aur src-tsbpp-original/TSpack.h src-tsbpp-modified/TSpack.h
+--- src-tsbpp-original/TSpack.h	2002-08-30 10:35:00.000000000 -0300
++++ src-tsbpp-modified/TSpack.h	2020-01-09 09:47:25.000000000 -0300
+@@ -15,18 +15,18 @@
+ #define intsz(c1,c2,c3,c4) (incl(c3,c1,c4)?rest1(c1,c2,c3,c4):rest2(c1,c2,c3,c4))
+ 
+ /* TABU SEARCH parameters */
+-#define Kmax   3              /* maximum size of the parametric neighborhood     */
+-#define Dmax   2              /* soft diversification parameter                  */
+-#define Kten   20             /* tabu tenure (equal for each of the Kmax lists)  */
+-#define CCmax  50             /* max number of calls with no improvement allowed */
+-#define nITmax 500            /* max number of calls of the search inner loop    */
+-#define ALPHA  3.5            /* filling function parameter (active if whichF=0) */
++//#define Kmax   3              /* maximum size of the parametric neighborhood     */
++//#define Dmax   2              /* soft diversification parameter                  */
++//#define Kten   20             /* tabu tenure (equal for each of the Kmax lists)  */
++#define CCmax  50              /* max number of calls with no improvement allowed */
++#define nITmax 5000            /* max number of calls of the search inner loop    */
++//#define ALPHA  3.5            /* filling function parameter (active if whichF=0) */
+ 
+ /* user's specified selections */ 
+-#define whichH 0              /* select the HEURISTIC algorithm      */
+-#define whichP 0              /* select the PENALTY function         */
+-#define whichF 0              /* select the FILLING function         */
+-#define whichL 1              /* select the LOWER BOUNDING procedure */
++#define whichH 0                /* select the HEURISTIC algorithm      */
++//#define whichP 0              /* select the PENALTY function         */
++#define whichF 0                /* select the FILLING function         */
++//#define whichL 1              /* select the LOWER BOUNDING procedure */
+ 
+ /* constants */
+ #define INFINITY 1000000000.  /* an infinite value, machine dependent */
+@@ -40,9 +40,9 @@
+ /* TEMPLATES: */
+ 
+ /* a) core procedures: */
+-int TSpack(int d, int n, int **w, int *W, int lb, float TL, int *ub0, int **x, int *b);
++int TSpack(int d, int n, int **w, int *W, int lb, double TL, int *ub0, int **x, int *b);
+ int search(int t, int *K, int *dv, 
+-           int nb, int d, int n, int **w, int *W, int **x, int *b, double *ff, float timeLeft);
++           int nb, int d, int n, int **w, int *W, int **x, int *b, double *ff, double timeLeft);
+ 
+ /* b) general selection procedures: */
+ int    heur(int d, int n, int **w, int *W, int **x, int *b);
+@@ -61,4 +61,4 @@
+ 
+ /* e) general utility procedures: */
+ void sort(int n, int *x, int *y);
+-void second(float *time);
++void second(double *time);

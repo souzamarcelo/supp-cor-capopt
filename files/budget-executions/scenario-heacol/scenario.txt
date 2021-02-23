@@ -1,0 +1,6 @@
+parameterFile = "./parameters-heacol.txt"
+execDir = "."
+trainInstancesDir = "./train-instances"
+maxExperiments = 2000
+digits = 2
+targetRunner = "./capopt/capopt.py"

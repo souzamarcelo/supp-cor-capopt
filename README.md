@@ -3,7 +3,7 @@ Supplementary material to the article:
 **Capping Methods for the Automatic Configuration of Optimization Algorithms**<br>
 [Marcelo de Souza][marcelo], [Marcus Ritt][marcus] and [Manuel López-Ibáñez][manuel]<br>
 Computers & Operations Research, 2021<br>
-[link to the article](https://www.sciencedirect.com/science/article/abs/pii/S0305054821003300)
+[[link to the article](https://www.sciencedirect.com/science/article/abs/pii/S0305054821003300)]
 
 <br>
 
